@@ -13,6 +13,7 @@ import { useMediaQuery, useOnline } from '@/lib/use-browser'
 import { AboutSheet } from './about-sheet'
 import { AskView } from './ask-view'
 import { HomeView } from './home-view'
+import { InfoSections } from './info-sections'
 import { LanguageMenu } from './language-switcher'
 import { Logo } from './logo'
 import { MapView } from './map-view'
@@ -81,8 +82,8 @@ export function AppShell() {
   }
 
   return (
-    <div className="min-h-dvh pb-28 lg:pb-0 lg:pl-28">
-      <header className="sticky top-3 z-30 mx-auto max-w-[1200px] px-3 lg:px-8">
+    <div className="min-h-dvh pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0 lg:pl-28">
+      <header className="sticky top-[max(0.75rem,env(safe-area-inset-top))] z-30 mx-auto max-w-[1200px] px-3 lg:px-8">
         <LiquidGlass radius={28} tint="dark" className="text-ink">
           <div className="flex min-h-16 items-center justify-between gap-2 px-4">
             <div className="flex min-w-0 items-center gap-3">
@@ -143,13 +144,15 @@ export function AppShell() {
         </main>
       </div>
 
+      {tab === 'today' ? <InfoSections /> : null}
+
       <SiteFooter onNavigate={setTab} onAbout={() => setAboutOpen(true)} onShare={share} />
 
       <LiquidGlass
         render={<nav aria-label={t('nav.label')} />}
         radius={32}
         tint="dark"
-        className="!fixed inset-x-3 bottom-3 z-30 lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-3 lg:w-20 lg:-translate-y-1/2"
+        className="!fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-3 lg:w-20 lg:-translate-y-1/2"
       >
         <div
           role="tablist"
@@ -216,7 +219,7 @@ export function AppShell() {
       {toast ? (
         <p
           role="status"
-          className="fixed bottom-28 left-1/2 z-50 -translate-x-1/2 rounded-popup bg-ink px-4 py-3 text-sm text-surface shadow-float lg:bottom-6"
+          className="fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom))] left-1/2 z-50 -translate-x-1/2 rounded-popup bg-ink px-4 py-3 text-sm text-surface shadow-float lg:bottom-6"
         >
           {toast}
         </p>

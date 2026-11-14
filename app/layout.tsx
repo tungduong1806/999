@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     icon: '/logo.png',
     apple: '/logo.png',
   },
+  appleWebApp: {
+    capable: true,
+    title: 'Thở Sạch',
+    statusBarStyle: 'black-translucent',
+  },
+  formatDetection: { telephone: false },
 }
 
 export const viewport: Viewport = {
@@ -31,6 +37,7 @@ export const viewport: Viewport = {
   themeColor: '#0A0F16',
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -43,7 +50,7 @@ export default function RootLayout({
       lang="vi"
       className={`${googleSansFlex.variable} ${notoSansJp.variable} bg-ground`}
     >
-      <body className="bg-ground text-ink antialiased">
+      <body className="overflow-x-hidden bg-ground text-ink antialiased [-webkit-text-size-adjust:100%] [-webkit-tap-highlight-color:transparent]">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
