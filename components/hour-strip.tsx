@@ -114,10 +114,13 @@ export function HourStrip({ cells, activeIndex, name, onSelect, bracket }: Props
             <li
               key={cell.key}
               title={cell.label}
-              className="relative h-7 rounded-cell"
+              className="relative h-7 rounded-[6px] transition-transform"
               style={{
                 backgroundColor: cell.bg,
-                ...(i === activeIndex ? { outline: '2px solid var(--color-ink)', zIndex: 10 } : null),
+                backgroundImage: 'linear-gradient(180deg, rgb(255 255 255 / 0.28), rgb(0 0 0 / 0.14))',
+                ...(i === activeIndex
+                  ? { transform: 'scaleY(1.4)', boxShadow: '0 6px 14px rgb(0 0 0 / 0.55)', zIndex: 10 }
+                  : null),
               }}
             >
               <span className="sr-only">{cell.label}</span>
