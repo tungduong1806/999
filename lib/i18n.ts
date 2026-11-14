@@ -171,8 +171,7 @@ const vi = {
   'ask.p1': 'Tính năng này sẽ có ở phiên bản 2. Bạn sẽ soạn nhanh tin nhắn hỏi người nhà về tình hình mưa lũ ở quê.',
   'ask.p2': 'Phiên bản này chỉ hiển thị số liệu mô hình từ Open-Meteo và không gửi dữ liệu của bạn đi đâu.',
 
-  'info.eyebrow': 'Về Thở Sạch',
-  'info.heading': 'Dữ liệu môi trường dễ hiểu cho học sinh, sinh viên và người xa quê',
+   'info.heading': 'Dữ liệu môi trường dễ hiểu cho học sinh, sinh viên và người xa quê',
   'info.lead':
     'Thở Sạch tổng hợp số liệu mô hình về chất lượng không khí, lượng mưa và mực nước theo từng phường, xã. Bạn nhận được một câu trả lời rõ ràng cho mỗi ngày: có cần đeo khẩu trang không, nên ra ngoài lúc nào, và quê nhà có đang gặp mưa lũ không.',
   'info.f1.title': 'Chất lượng không khí theo giờ',
@@ -373,8 +372,7 @@ const en: Dict = {
   'ask.p1': 'This feature arrives in version 2. You will be able to quickly write a message asking family about floods back home.',
   'ask.p2': 'This version only shows model data from Open-Meteo and does not send your data anywhere.',
 
-  'info.eyebrow': 'About Thở Sạch',
-  'info.heading': 'Clear environmental insight for students, workers and families far from home',
+   'info.heading': 'Clear environmental insight for students, workers and families far from home',
   'info.lead':
     'Thở Sạch brings together modelled air quality, rainfall and river-level data for every ward and commune. You get one clear answer each day: whether to wear a mask, when it is best to go outside, and whether your hometown is facing heavy rain or flooding.',
   'info.f1.title': 'Hourly air quality',
@@ -440,7 +438,7 @@ const ja: Dict = {
   'share.text': '今日マスクが必要かどうかをすぐに確認できます。',
   'share.copied': 'リンクをコピーしました',
 
-  'about.title': 'Thở Sạch について',
+  'about.title': 'アプリの紹介',
   'about.desc':
     'Thở Sạch は、今日マスクが必要か、故郷に洪水の恐れがあるかをすぐに確認できるアプリです。数値は観測所の実測ではなく、モデルによる推定値です。',
   'about.sources': 'データ提供元',
@@ -572,8 +570,7 @@ const ja: Dict = {
   'ask.p1': 'この機能はバージョン 2 で提供予定です。故郷の洪水の状況を家族にすばやく尋ねるメッセージを作成できます。',
   'ask.p2': 'このバージョンでは Open-Meteo のモデルデータを表示するだけで、あなたのデータはどこにも送信されません。',
 
-  'info.eyebrow': 'Thở Sạch について',
-  'info.heading': '学生・社会人・故郷を離れた家族のための、わかりやすい環境情報',
+   'info.heading': '学生・社会人・故郷を離れた家族のための、わかりやすい環境情報',
   'info.lead':
     'Thở Sạch は、地区ごとの大気質・降水量・河川水位のモデルデータをまとめて表示します。マスクが必要か、外出に適した時間帯はいつか、故郷で大雨や洪水の恐れはないか。毎日の判断に必要な答えをひと目で確認できます。',
   'info.f1.title': '1時間ごとの大気質',

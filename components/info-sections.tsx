@@ -40,7 +40,6 @@ export function InfoSections() {
   return (
     <div className={`${pageX} mx-auto mt-16 flex max-w-[1200px] flex-col gap-14`}>
       <section aria-labelledby="info-heading" className="flex max-w-3xl flex-col gap-3">
-        <p className="text-sm font-medium tracking-wide text-accent uppercase">{t('info.eyebrow')}</p>
         <h2
           id="info-heading"
           className="font-display text-2xl leading-tight tracking-tight text-balance sm:text-3xl lg:text-4xl"
@@ -50,7 +49,7 @@ export function InfoSections() {
         <p className="leading-relaxed text-pretty text-ink-muted">{t('info.lead')}</p>
       </section>
 
-      <section aria-label={t('info.eyebrow')}>
+      <section aria-labelledby="info-heading">
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map(({ Icon, title, desc }) => (
             <li key={title} className="flex flex-col gap-3 rounded-popup bg-surface p-5">
