@@ -28,6 +28,10 @@
   --radius-sheet: 16px;
 
   --shadow-float: 0 6px 24px rgb(22 27 31 / 0.16);
+  --shadow-press-accent: 0 3px 0 #1e3a8a, 0 6px 10px rgb(30 58 138 / 0.28);
+  --shadow-press-ink: 0 3px 0 #161b1f, 0 6px 10px rgb(22 27 31 / 0.16);
+  --shadow-card-3d: 0 2px 0 #d9ded8, 0 8px 16px rgb(22 27 31 / 0.08);
+  --drop-shadow-logo: 0 4px 6px rgb(22 27 31 / 0.22);
 
   --ease-sheet: cubic-bezier(0.2, 0, 0, 1);
 }

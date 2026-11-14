@@ -9,6 +9,7 @@ import { pageX, textButton } from '@/lib/ui'
 import { useMediaQuery, useOnline } from '@/lib/use-browser'
 import { AskView } from './ask-view'
 import { HomeView } from './home-view'
+import { Logo } from './logo'
 import { MapView } from './map-view'
 import { PlaceSheet, type SheetMode } from './place-sheet'
 import { TodayView } from './today-view'
@@ -59,13 +60,16 @@ export function AppShell() {
     <div className="min-h-dvh pb-20 lg:pb-0 lg:pl-24">
       <header className="sticky top-0 z-30 border-b border-line bg-ground">
         <div className={`${pageX} mx-auto flex min-h-16 max-w-[1200px] items-center justify-between gap-4`}>
-          <div className="min-w-0">
-            <h1 className="truncate font-display text-xl leading-tight tracking-tight">
-              {ready && current ? current.name : 'Thở Sạch'}
-            </h1>
-            {ready && current?.detail ? (
-              <p className="truncate text-sm text-ink-muted">{current.detail}</p>
-            ) : null}
+          <div className="flex min-w-0 items-center gap-3">
+            <Logo size={44} />
+            <div className="min-w-0">
+              <h1 className="truncate font-display text-xl leading-tight tracking-tight">
+                {ready && current ? current.name : 'Thở Sạch'}
+              </h1>
+              {ready && current?.detail ? (
+                <p className="truncate text-sm text-ink-muted">{current.detail}</p>
+              ) : null}
+            </div>
           </div>
           {ready && current ? (
             <button type="button" onClick={() => setSheet('current')} className={textButton}>
