@@ -1,7 +1,8 @@
 'use client'
 
-import { Check, Translate } from '@phosphor-icons/react'
+import { Check } from '@phosphor-icons/react'
 import { useEffect, useId, useRef, useState } from 'react'
+import { Flag } from '@/components/flag'
 import { LANGS, setLang, useT } from '@/lib/i18n'
 
 /** Header dropdown: globe icon, current language code, three native language names. */
@@ -38,7 +39,7 @@ export function LanguageMenu() {
         aria-label={t('nav.language')}
         className="flex min-h-11 items-center gap-1.5 rounded-popup px-3 text-sm font-medium text-ink transition-colors hover:bg-line/70"
       >
-        <Translate size={20} weight="duotone" aria-hidden="true" className="text-accent" />
+        <Flag lang={current.id} className="size-5" />
         {current.short}
       </button>
       {open ? (
@@ -64,9 +65,7 @@ export function LanguageMenu() {
                     selected ? 'bg-line/60 font-medium text-accent' : 'text-ink'
                   }`}
                 >
-                  <span className="grid size-8 shrink-0 place-items-center rounded-cell bg-line text-xs font-semibold text-ink">
-                    {l.short}
-                  </span>
+                  <Flag lang={l.id} className="size-7" />
                   <span className="flex-1">{l.native}</span>
                   {selected ? <Check size={20} weight="bold" aria-hidden="true" /> : null}
                 </button>
@@ -93,10 +92,11 @@ export function LanguageSegmented() {
             lang={l.id}
             aria-pressed={selected}
             onClick={() => setLang(l.id)}
-            className={`min-h-10 whitespace-nowrap rounded-cell px-3 text-sm transition-colors ${
+            className={`flex min-h-10 items-center gap-2 whitespace-nowrap rounded-cell px-3 text-sm transition-colors ${
               selected ? 'bg-accent font-medium text-surface' : 'text-ink-muted hover:text-ink'
             }`}
           >
+            <Flag lang={l.id} className="size-5" />
             {l.native}
           </button>
         )
