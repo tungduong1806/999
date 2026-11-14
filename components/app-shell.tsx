@@ -23,7 +23,7 @@ import { TABS, type TabId } from './tabs'
 import { TodayView } from './today-view'
 
 const railTool =
-  'grid size-12 place-items-center rounded-popup text-ink-muted transition-colors hover:bg-line/70 hover:text-accent'
+  'grid size-14 place-items-center rounded-popup text-ink-muted transition-colors hover:bg-line/70 hover:text-accent'
 
 export function AppShell() {
   const { t } = useT()
@@ -82,7 +82,7 @@ export function AppShell() {
   }
 
   return (
-    <div className="min-h-dvh pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0 lg:pl-28">
+    <div className="min-h-dvh pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0 lg:pl-32">
       <header className="sticky top-[max(0.75rem,env(safe-area-inset-top))] z-30 mx-auto max-w-[1200px] px-3 lg:px-8">
         <LiquidGlass radius={28} tint="dark" className="text-ink">
           <div className="flex min-h-16 items-center justify-between gap-2 px-4">
@@ -152,7 +152,7 @@ export function AppShell() {
         render={<nav aria-label={t('nav.label')} />}
         radius={32}
         tint="dark"
-        className="!fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-3 lg:w-20 lg:-translate-y-1/2"
+        className="!fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-4 lg:w-24 lg:-translate-y-1/2"
       >
         <div
           role="tablist"
@@ -175,7 +175,7 @@ export function AppShell() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setTab(id)}
                 onKeyDown={(e) => onTabKeyDown(e, index)}
-                className={`flex min-h-16 flex-col items-center justify-center gap-1 text-sm transition-colors lg:min-h-[4.5rem] ${
+                className={`flex min-h-16 flex-col items-center justify-center gap-1 text-sm transition-colors lg:min-h-20 ${
                   selected ? 'font-medium text-accent' : 'text-ink-muted hover:text-ink'
                 }`}
               >

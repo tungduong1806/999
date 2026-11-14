@@ -42,7 +42,7 @@ export function AboutSheet({ open, onClose }: Props) {
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
-      className="sheet fixed inset-0 m-0 mx-auto mt-auto h-fit max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-sheet border border-b-0 border-line bg-surface/90 p-0 text-ink shadow-float backdrop-blur-xl"
+      className="sheet fixed inset-0 m-0 mx-auto mt-auto h-fit max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-sheet bg-surface p-0 text-ink shadow-float lg:max-w-[720px]"
     >
       {open ? (
         <div className="flex flex-col gap-5 p-4 pb-8 sm:p-6 sm:pb-8">

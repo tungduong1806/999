@@ -46,7 +46,7 @@ export function LanguageMenu() {
           id={listId}
           role="group"
           aria-label={t('nav.language')}
-          className="absolute right-0 top-full z-40 mt-2 flex w-48 flex-col gap-1 rounded-popup bg-surface p-1.5 shadow-float"
+          className="absolute right-0 top-full z-40 mt-2 flex w-60 flex-col gap-1 rounded-popup bg-surface p-2 shadow-float"
         >
           {LANGS.map((l) => {
             const selected = l.id === lang
@@ -60,12 +60,15 @@ export function LanguageMenu() {
                     setLang(l.id)
                     setOpen(false)
                   }}
-                  className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-cell px-3 text-left transition-colors hover:bg-line ${
-                    selected ? 'font-medium text-accent' : 'text-ink'
+                  className={`flex min-h-12 w-full items-center gap-3 rounded-cell px-3 text-left transition-colors hover:bg-line ${
+                    selected ? 'bg-line/60 font-medium text-accent' : 'text-ink'
                   }`}
                 >
-                  <span>{l.native}</span>
-                  {selected ? <Check size={18} weight="bold" aria-hidden="true" /> : null}
+                  <span className="grid size-8 shrink-0 place-items-center rounded-cell bg-line text-xs font-semibold text-ink">
+                    {l.short}
+                  </span>
+                  <span className="flex-1">{l.native}</span>
+                  {selected ? <Check size={20} weight="bold" aria-hidden="true" /> : null}
                 </button>
               </li>
             )
