@@ -12,7 +12,7 @@ export const LANGS: { id: Lang; short: string; native: string; locale: string }[
 
 const vi = {
   'app.name': 'Thở Sạch',
-  'app.tagline': 'Không khí hôm nay, nước sông ở quê',
+  'app.tagline': 'Chất lượng không khí và cảnh báo lũ',
 
   'nav.label': 'Các mục chính',
   'nav.today': 'Hôm nay',
@@ -35,7 +35,7 @@ const vi = {
   'offline.last': 'Đang hiển thị số liệu lưu lần cuối lúc {time}.',
   'offline.none': 'Chưa có số liệu đã lưu để hiển thị.',
 
-  'share.title': 'Thở Sạch: không khí hôm nay, nước sông ở quê',
+  'share.title': 'Thở Sạch: chất lượng không khí và cảnh báo lũ',
   'share.text': 'Xem nhanh hôm nay có cần đeo khẩu trang không.',
   'share.copied': 'Đã sao chép liên kết',
 
@@ -56,7 +56,7 @@ const vi = {
   'footer.emergency': 'Khẩn cấp',
   'footer.developedBy': 'Phát triển bởi',
   'footer.rights': 'Mọi quyền được bảo lưu.',
-  'footer.blurb': 'Không khí hôm nay, nước sông ở quê. Số liệu mô hình từ Open-Meteo.',
+  'footer.blurb': 'Theo dõi chất lượng không khí và nguy cơ mưa lũ theo từng khu vực. Số liệu mô hình từ Open-Meteo.',
   'footer.backToTop': 'Lên đầu trang',
   'footer.moreTracking': 'Theo dõi thêm',
   'footer.basemap': 'Bản đồ nền',
@@ -185,7 +185,7 @@ type Dict = Record<TKey, string>
 
 const en: Dict = {
   'app.name': 'Thở Sạch',
-  'app.tagline': "Today's air, your hometown's rivers",
+  'app.tagline': 'Air quality and flood alerts',
 
   'nav.label': 'Main sections',
   'nav.today': 'Today',
@@ -208,7 +208,7 @@ const en: Dict = {
   'offline.last': 'Showing data last saved at {time}.',
   'offline.none': 'There is no saved data to show yet.',
 
-  'share.title': 'Thở Sạch: today’s air, your hometown’s rivers',
+  'share.title': 'Thở Sạch: air quality and flood alerts',
   'share.text': 'Check at a glance whether you need a mask today.',
   'share.copied': 'Link copied',
 
@@ -229,7 +229,7 @@ const en: Dict = {
   'footer.emergency': 'Emergency',
   'footer.developedBy': 'Developed by',
   'footer.rights': 'All rights reserved.',
-  'footer.blurb': "Today's air, your hometown's rivers. Model data from Open-Meteo.",
+  'footer.blurb': 'Track air quality and flood risk for any area. Model data from Open-Meteo.',
   'footer.backToTop': 'Back to top',
   'footer.moreTracking': 'More official sources',
   'footer.basemap': 'Base map',
@@ -355,7 +355,7 @@ const en: Dict = {
 
 const ja: Dict = {
   'app.name': 'Thở Sạch',
-  'app.tagline': '今日の空気と、故郷の川',
+  'app.tagline': '大気質と洪水リスクの情報',
 
   'nav.label': 'メインメニュー',
   'nav.today': '今日',
@@ -378,7 +378,7 @@ const ja: Dict = {
   'offline.last': '{time} に保存した最後のデータを表示しています。',
   'offline.none': '表示できる保存済みデータがまだありません。',
 
-  'share.title': 'Thở Sạch: 今日の空気と、故郷の川',
+  'share.title': 'Thở Sạch: 大気質と洪水リスクの情報',
   'share.text': '今日マスクが必要かどうかをすぐに確認できます。',
   'share.copied': 'リンクをコピーしました',
 
@@ -399,7 +399,7 @@ const ja: Dict = {
   'footer.emergency': '緊急連絡',
   'footer.developedBy': '開発者',
   'footer.rights': 'All rights reserved.',
-  'footer.blurb': '今日の空気と、故郷の川。Open-Meteo のモデルデータを使用。',
+  'footer.blurb': '地域ごとの大気質と洪水リスクを確認。Open-Meteo のモデルデータを使用。',
   'footer.backToTop': 'ページの先頭へ',
   'footer.moreTracking': '公的情報サイト',
   'footer.basemap': 'ベースマップ',

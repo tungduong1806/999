@@ -11,7 +11,7 @@ const variants = {
   primary:
     'bg-accent text-surface shadow-press-accent motion-safe:active:translate-y-[3px] motion-safe:active:shadow-none disabled:bg-line disabled:text-ink-muted',
   outline:
-    'border border-ink bg-surface text-ink shadow-press-ink motion-safe:active:translate-y-[3px] motion-safe:active:shadow-none disabled:border-line disabled:text-ink-muted',
+    'bg-line/70 text-ink hover:bg-line motion-safe:active:translate-y-px disabled:bg-line/40 disabled:text-ink-muted',
 } as const
 
 export function Button3D({ variant = 'primary', className = '', type = 'button', ...props }: Button3DProps) {

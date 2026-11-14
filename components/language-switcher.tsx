@@ -90,7 +90,7 @@ export function LanguageSegmented() {
             lang={l.id}
             aria-pressed={selected}
             onClick={() => setLang(l.id)}
-            className={`min-h-10 rounded-cell px-3 text-sm transition-colors ${
+            className={`min-h-10 whitespace-nowrap rounded-cell px-3 text-sm transition-colors ${
               selected ? 'bg-accent font-medium text-surface' : 'text-ink-muted hover:text-ink'
             }`}
           >

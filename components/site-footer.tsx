@@ -42,7 +42,7 @@ function FooterAction({ onClick, Icon, children }: { onClick: () => void; Icon: 
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex min-h-10 items-center gap-2 rounded-popup bg-line/60 px-3 text-sm text-ink transition-colors hover:bg-line"
+      className="inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-popup bg-line/60 px-3 text-sm text-ink transition-colors hover:bg-line"
     >
       <Icon size={18} weight="duotone" aria-hidden="true" className="text-accent" />
       {children}

@@ -17,7 +17,7 @@ const notoSansJp = Noto_Sans_JP({
 })
 
 export const metadata: Metadata = {
-  title: 'Thở Sạch: không khí hôm nay, nước sông ở quê',
+  title: 'Thở Sạch: chất lượng không khí và cảnh báo lũ',
   description:
     'Xem nhanh hôm nay có cần đeo khẩu trang không và quê nhà có nguy cơ mưa lũ không. Số liệu mô hình từ Open-Meteo.',
   icons: {
