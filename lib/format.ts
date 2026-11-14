@@ -1,16 +1,20 @@
+import { getLang, localeOf, translate, type TKey } from './i18n'
+
 export const TZ = 'Asia/Ho_Chi_Minh'
 
-const numberFormats = new Map<number, Intl.NumberFormat>()
+const numberFormats = new Map<string, Intl.NumberFormat>()
 
-/** Vietnamese number format: decimal comma, dot grouping. */
+/** Number format for the active language (vi: decimal comma, en/ja: decimal point). */
 export function formatNumber(value: number, fractionDigits = 1): string {
-  let nf = numberFormats.get(fractionDigits)
+  const locale = localeOf()
+  const key = `${locale}:${fractionDigits}`
+  let nf = numberFormats.get(key)
   if (!nf) {
-    nf = new Intl.NumberFormat('vi-VN', {
+    nf = new Intl.NumberFormat(locale, {
       minimumFractionDigits: 0,
       maximumFractionDigits: fractionDigits,
     })
-    numberFormats.set(fractionDigits, nf)
+    numberFormats.set(key, nf)
   }
   return nf.format(value)
 }
@@ -61,12 +65,10 @@ export function todayKey(nowMs = Date.now()): string {
   return currentHourKey(nowMs).slice(0, 10)
 }
 
-const WEEKDAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
-
-/** Short Vietnamese weekday for a YYYY-MM-DD string. */
+/** Short weekday in the active language for a YYYY-MM-DD string. */
 export function weekdayShort(dateKey: string): string {
   const d = new Date(`${dateKey}T00:00:00Z`)
-  return WEEKDAYS[d.getUTCDay()]
+  return translate(getLang(), `wd.${d.getUTCDay()}` as TKey)
 }
 
 /** dd/MM from a YYYY-MM-DD string. */

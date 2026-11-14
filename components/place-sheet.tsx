@@ -1,8 +1,9 @@
 'use client'
 
+import { X } from '@phosphor-icons/react'
 import { useEffect, useRef } from 'react'
+import { useT } from '@/lib/i18n'
 import { addHomePlace, MAX_HOMES, setCurrentPlace, usePlaces, type Place } from '@/lib/places'
-import { textButton } from '@/lib/ui'
 import { PlacePicker } from './place-picker'
 
 export type SheetMode = 'current' | 'home' | null
@@ -15,6 +16,7 @@ type Props = {
 export function PlaceSheet({ mode, onClose }: Props) {
   const ref = useRef<HTMLDialogElement>(null)
   const { homes } = usePlaces()
+  const { t } = useT()
 
   useEffect(() => {
     const dialog = ref.current
@@ -29,7 +31,7 @@ export function PlaceSheet({ mode, onClose }: Props) {
     onClose()
   }
 
-  const title = mode === 'home' ? 'Thêm nơi ở quê' : 'Đổi nơi bạn đang học'
+  const title = mode === 'home' ? t('sheet.addHome') : t('sheet.change')
   const full = mode === 'home' && homes.length >= MAX_HOMES
 
   return (
@@ -48,15 +50,16 @@ export function PlaceSheet({ mode, onClose }: Props) {
             <h2 id="place-sheet-title" className="font-display text-xl leading-tight tracking-tight">
               {title}
             </h2>
-            <button type="button" onClick={onClose} className={textButton}>
-              Đóng
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label={t('common.close')}
+              className="grid size-11 place-items-center rounded-popup text-ink transition-colors hover:bg-line"
+            >
+              <X size={20} weight="bold" aria-hidden="true" />
             </button>
           </div>
-          {full ? (
-            <p>Bạn đã lưu đủ {MAX_HOMES} nơi. Xóa bớt một nơi ở tab Quê nhà để thêm nơi mới.</p>
-          ) : (
-            <PlacePicker onPick={handlePick} />
-          )}
+          {full ? <p>{t('sheet.full', { max: MAX_HOMES })}</p> : <PlacePicker onPick={handlePick} />}
         </div>
       ) : null}
     </dialog>

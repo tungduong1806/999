@@ -1,20 +1,19 @@
+'use client'
+
+import { ChatCircleText } from '@phosphor-icons/react'
+import { useT } from '@/lib/i18n'
 import { pageX } from '@/lib/ui'
-import { Credits } from './credits'
 import { SectionTitle } from './states'
 
 export function AskView() {
+  const { t } = useT()
   return (
-    <>
-      <section className={`${pageX} flex max-w-[560px] flex-col gap-4 py-10`} aria-labelledby="ask-heading">
-        <SectionTitle id="ask-heading">Hỏi thăm</SectionTitle>
-        <p className="text-lg text-pretty">
-          Tính năng này sẽ có ở phiên bản 2. Bạn sẽ soạn nhanh tin nhắn hỏi người nhà về tình hình mưa lũ ở quê.
-        </p>
-        <p className="text-ink-muted">
-          Phiên bản này chỉ hiển thị số liệu mô hình từ Open-Meteo và không gửi dữ liệu của bạn đi đâu.
-        </p>
-      </section>
-      <Credits />
-    </>
+    <section className={`${pageX} flex max-w-[560px] flex-col gap-4 py-10`} aria-labelledby="ask-heading">
+      <SectionTitle id="ask-heading" icon={<ChatCircleText size={20} weight="duotone" />}>
+        {t('ask.title')}
+      </SectionTitle>
+      <p className="text-lg text-pretty">{t('ask.p1')}</p>
+      <p className="text-ink-muted">{t('ask.p2')}</p>
+    </section>
   )
 }

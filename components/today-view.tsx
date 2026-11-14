@@ -1,13 +1,14 @@
 'use client'
 
+import { CloudRain, Thermometer, Wind as WindIcon } from '@phosphor-icons/react'
 import { useMemo } from 'react'
-import { adviceFor, aqiLevel } from '@/lib/aqi'
+import { aqiLevel, worthWaiting } from '@/lib/aqi'
 import { SOURCES, type Air, type Weather } from '@/lib/data'
 import { currentHourKey, formatNumber, hhmmFromIso } from '@/lib/format'
+import { useT, type Translator } from '@/lib/i18n'
 import { setCurrentPlace, type Place } from '@/lib/places'
 import { useAir, useWeather } from '@/lib/queries'
 import { pageX } from '@/lib/ui'
-import { Credits } from './credits'
 import { HourStrip, type StripCell } from './hour-strip'
 import { PlacePicker } from './place-picker'
 import { LoadingNote, SectionError, SectionTitle, SkeletonBlock } from './states'
@@ -18,21 +19,15 @@ export function TodayView({ place }: { place: Place | null }) {
 }
 
 function FirstRun() {
+  const { t } = useT()
   return (
-    <>
-      <section className={`${pageX} flex max-w-[560px] flex-col gap-6 py-10`}>
-        <div className="flex flex-col gap-2">
-          <h2 className="font-display text-3xl leading-tight tracking-tight text-balance">
-            Bạn đang ở đâu hôm nay?
-          </h2>
-          <p className="text-ink-muted">
-            Chọn nơi bạn đang học hoặc làm việc để xem hôm nay có cần đeo khẩu trang không.
-          </p>
-        </div>
-        <PlacePicker onPick={setCurrentPlace} />
-      </section>
-      <Credits weather={false} />
-    </>
+    <section className={`${pageX} flex max-w-[560px] flex-col gap-6 py-10`}>
+      <div className="flex flex-col gap-2">
+        <h2 className="font-display text-3xl leading-tight tracking-tight text-balance">{t('first.title')}</h2>
+        <p className="text-ink-muted">{t('first.desc')}</p>
+      </div>
+      <PlacePicker onPick={setCurrentPlace} />
+    </section>
   )
 }
 
@@ -61,33 +56,31 @@ function TodayForPlace({ place }: { place: Place }) {
   const weather = useWeather(place.lat, place.lon)
 
   return (
-    <>
-      <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <div>
-          {air.error ? (
-            <div className={`${pageX} py-6`}>
-              <SectionError source={SOURCES.openMeteo} onRetry={() => air.mutate()} />
-            </div>
-          ) : air.data ? (
-            <AirContent air={air.data} />
-          ) : (
-            <AirSkeleton />
-          )}
-        </div>
-        <div className={`${pageX} py-6 lg:pl-0`}>
-          <WeatherBlock weather={weather} />
-        </div>
+    <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div>
+        {air.error ? (
+          <div className={`${pageX} py-6`}>
+            <SectionError source={SOURCES.openMeteo} onRetry={() => air.mutate()} />
+          </div>
+        ) : air.data ? (
+          <AirContent air={air.data} />
+        ) : (
+          <AirSkeleton />
+        )}
       </div>
-      <Credits />
-    </>
+      <div className={`${pageX} py-6 lg:pl-0`}>
+        <WeatherBlock weather={weather} />
+      </div>
+    </div>
   )
 }
 
 function AirSkeleton() {
+  const { t } = useT()
   return (
     <div>
       <div className="flex min-h-56 flex-col justify-between bg-line px-4 py-6 lg:px-8">
-        <LoadingNote>Đang lấy chất lượng không khí…</LoadingNote>
+        <LoadingNote>{t('air.loading')}</LoadingNote>
         <SkeletonBlock className="h-16 w-40 bg-surface" />
       </div>
       <div className={`${pageX} py-6`}>
@@ -97,50 +90,56 @@ function AirSkeleton() {
   )
 }
 
-function AirContent({ air }: { air: Air }) {
-  const { level, strip, advice } = useMemo(() => {
-    const level = aqiLevel(air.aqi)
-    const currentKey = `${air.time.slice(0, 13)}:00`
-    const start = Math.max(
-      0,
-      air.hourly.findIndex((h) => h.time === currentKey),
-    )
-    const window = air.hourly.slice(start, start + 24)
-    const cleanest = findCleanestPair(window)
+function buildStrip(air: Air, t: Translator) {
+  const currentKey = `${air.time.slice(0, 13)}:00`
+  const start = Math.max(
+    0,
+    air.hourly.findIndex((h) => h.time === currentKey),
+  )
+  const window = air.hourly.slice(start, start + 24)
+  const cleanest = findCleanestPair(window)
 
-    const cells: StripCell[] = window.map((h) => {
-      const hour = Number(h.time.slice(11, 13))
-      const hhmm = hhmmFromIso(h.time)
-      if (h.aqi == null) {
-        return {
-          key: h.time,
-          bg: 'var(--color-line)',
-          label: `${hhmm}: chưa có số liệu`,
-          tick: hour % 3 === 0 ? hhmm : undefined,
-          tickShort: hour % 3 === 0 ? pad(hour) : undefined,
-        }
-      }
-      const l = aqiLevel(h.aqi)
+  const cells: StripCell[] = window.map((h) => {
+    const hour = Number(h.time.slice(11, 13))
+    const hhmm = hhmmFromIso(h.time)
+    const tick = hour % 3 === 0 ? hhmm : undefined
+    const tickShort = hour % 3 === 0 ? pad(hour) : undefined
+    if (h.aqi == null) {
       return {
         key: h.time,
-        bg: l.bg,
-        label: `${hhmm}: AQI ${Math.round(h.aqi)}, ${l.label}`,
-        tick: hour % 3 === 0 ? hhmm : undefined,
-        tickShort: hour % 3 === 0 ? pad(hour) : undefined,
+        bg: 'var(--color-line)',
+        label: t('air.cellNoData', { time: hhmm }),
+        tick,
+        tickShort,
       }
-    })
-
-    return {
-      level,
-      strip: {
-        cells,
-        bracket: cleanest
-          ? { start: cleanest.index, length: 2, label: `Sạch nhất ${cleanest.range}` }
-          : undefined,
-      },
-      advice: adviceFor(level, cleanest?.range ?? null),
     }
-  }, [air])
+    const l = aqiLevel(h.aqi)
+    return {
+      key: h.time,
+      bg: l.bg,
+      label: t('air.cell', { time: hhmm, aqi: Math.round(h.aqi), level: t(l.labelKey) }),
+      tick,
+      tickShort,
+    }
+  })
+
+  return {
+    cells,
+    cleanestRange: cleanest?.range ?? null,
+    bracket: cleanest
+      ? { start: cleanest.index, length: 2, label: t('air.cleanest', { range: cleanest.range }) }
+      : undefined,
+  }
+}
+
+function AirContent({ air }: { air: Air }) {
+  const { t, lang } = useT()
+  const level = aqiLevel(air.aqi)
+  // The language is a dependency because the strip labels are translated.
+  const strip = useMemo(() => buildStrip(air, t), [air, t, lang])
+  const advice =
+    t(level.adviceKey) +
+    (worthWaiting(level) && strip.cleanestRange ? ` ${t('air.cleanerWindow', { range: strip.cleanestRange })}` : '')
 
   return (
     <div>
@@ -150,37 +149,35 @@ function AirContent({ air }: { air: Air }) {
         style={{ backgroundColor: level.bg, color: level.fg }}
       >
         <h2 id="aqi-heading" className="text-lg font-medium">
-          Chất lượng không khí ngay bây giờ
+          {t('air.title')}
         </h2>
         <div>
           <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <span className="font-mono text-[clamp(4.5rem,22vw,8rem)] leading-none font-medium">
               {Math.round(air.aqi)}
             </span>
-            <span className="font-display text-3xl leading-tight tracking-tight">{level.label}</span>
+            <span className="font-display text-3xl leading-tight tracking-tight">{t(level.labelKey)}</span>
           </p>
-          <p className="mt-2">
-            AQI Mỹ, lúc <span className="font-mono">{hhmmFromIso(air.time)}</span>
-          </p>
+          <p className="mt-2">{t('air.aqiAt', { time: hhmmFromIso(air.time) })}</p>
         </div>
       </section>
 
       <div className={`${pageX} flex flex-col gap-4 py-6`}>
-        <p className="text-ink-muted">Số ước tính từ mô hình, có thể khác trạm đo.</p>
+        <p className="text-ink-muted">{t('air.estimate')}</p>
         <p>
-          Bụi mịn PM2.5:{' '}
+          {t('air.pm25')}{' '}
           {air.pm25 != null ? (
             <>
               <span className="font-mono">{formatNumber(air.pm25, 1)}</span> µg/m³
             </>
           ) : (
-            'chưa có số liệu'
+            t('common.noData')
           )}
         </p>
 
         <div className="flex flex-col gap-1 pt-2">
-          <SectionTitle>24 giờ tới</SectionTitle>
-          <HourStrip cells={strip.cells} activeIndex={0} name="Chất lượng không khí 24 giờ tới" bracket={strip.bracket} />
+          <SectionTitle>{t('air.next24')}</SectionTitle>
+          <HourStrip cells={strip.cells} activeIndex={0} name={t('air.stripName')} bracket={strip.bracket} />
         </div>
 
         <p className="text-lg text-pretty">{advice}</p>
@@ -190,18 +187,21 @@ function AirContent({ air }: { air: Air }) {
 }
 
 function WeatherBlock({ weather }: { weather: ReturnType<typeof useWeather> }) {
+  const { t } = useT()
   const { data, error, mutate } = weather
 
   return (
     <section aria-labelledby="weather-heading" className="flex flex-col gap-3">
-      <SectionTitle id="weather-heading">Thời tiết lúc này</SectionTitle>
+      <SectionTitle id="weather-heading" icon={<Thermometer size={20} weight="duotone" />}>
+        {t('weather.title')}
+      </SectionTitle>
       {error ? (
         <SectionError source={SOURCES.openMeteo} onRetry={() => mutate()} />
       ) : data ? (
         <WeatherRows data={data} />
       ) : (
         <div className="flex flex-col gap-2">
-          <LoadingNote>Đang lấy thời tiết…</LoadingNote>
+          <LoadingNote>{t('weather.loading')}</LoadingNote>
           <SkeletonBlock className="h-11 w-full" />
           <SkeletonBlock className="h-11 w-full" />
           <SkeletonBlock className="h-11 w-full" />
@@ -212,37 +212,47 @@ function WeatherBlock({ weather }: { weather: ReturnType<typeof useWeather> }) {
 }
 
 function WeatherRows({ data }: { data: Weather }) {
+  const { t } = useT()
   const key = currentHourKey()
   const hour = data.hourly.find((h) => h.time === key) ?? data.hourly[0]
-  const rows: { label: string; value: string | null; unit: string }[] = [
+  const rows = [
     {
-      label: 'Nhiệt độ',
+      label: t('weather.temp'),
+      Icon: Thermometer,
       value: hour?.temperature != null ? formatNumber(hour.temperature, 0) : null,
       unit: '°C',
     },
     {
-      label: 'Khả năng mưa',
+      label: t('weather.rain'),
+      Icon: CloudRain,
       value: hour?.rainChance != null ? formatNumber(hour.rainChance, 0) : null,
       unit: '%',
     },
     {
-      label: 'Gió',
+      label: t('weather.wind'),
+      Icon: WindIcon,
       value: hour?.wind != null ? formatNumber(hour.wind, 0) : null,
       unit: 'km/h',
     },
   ]
   return (
-    <dl className="divide-y divide-line border-y border-line">
-      {rows.map((row) => (
-        <div key={row.label} className="flex min-h-11 items-center justify-between gap-4 py-2">
-          <dt className="text-ink-muted">{row.label}</dt>
+    <dl className="flex flex-col gap-2">
+      {rows.map(({ label, Icon, value, unit }) => (
+        <div
+          key={label}
+          className="flex min-h-14 items-center justify-between gap-4 rounded-popup bg-surface/70 px-3"
+        >
+          <dt className="flex items-center gap-2 text-ink-muted">
+            <Icon size={20} weight="duotone" aria-hidden="true" className="text-accent" />
+            {label}
+          </dt>
           <dd>
-            {row.value != null ? (
+            {value != null ? (
               <>
-                <span className="font-mono">{row.value}</span> {row.unit}
+                <span className="font-mono">{value}</span> {unit}
               </>
             ) : (
-              'chưa có số liệu'
+              t('common.noData')
             )}
           </dd>
         </div>

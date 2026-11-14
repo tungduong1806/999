@@ -4,6 +4,7 @@ import * as maplibregl from 'maplibre-gl'
 import type { GeoJSONSource, Map as MapLibreMap, MapLayerMouseEvent, RasterTileSource } from 'maplibre-gl'
 import { useEffect, useRef, useState } from 'react'
 import { dateTimeFromMs, formatNumber } from '@/lib/format'
+import { useT } from '@/lib/i18n'
 import type { Quake } from '@/lib/data'
 
 type Props = {
@@ -23,10 +24,13 @@ export default function MapCanvas({ radarTiles, quakes, onFailed }: Props) {
   const mapRef = useRef<MapLibreMap | null>(null)
   const onFailedRef = useRef(onFailed)
   const [ready, setReady] = useState(false)
+  const { t } = useT()
+  const tRef = useRef(t)
 
   useEffect(() => {
     onFailedRef.current = onFailed
-  }, [onFailed])
+    tRef.current = t
+  }, [onFailed, t])
 
   useEffect(() => {
     const container = containerRef.current
@@ -86,9 +90,9 @@ export default function MapCanvas({ radarTiles, quakes, onFailed }: Props) {
         const root = document.createElement('div')
         const title = document.createElement('p')
         title.className = 'font-medium'
-        title.textContent = `Động đất M ${formatNumber(mag, 1)}`
+        title.textContent = tRef.current('quake.popup', { mag: formatNumber(mag, 1) })
         const where = document.createElement('p')
-        where.textContent = place
+        where.textContent = place || tRef.current('quake.unknown')
         const when = document.createElement('p')
         when.className = 'font-mono text-ink-muted'
         when.textContent = dateTimeFromMs(time)
@@ -97,7 +101,7 @@ export default function MapCanvas({ radarTiles, quakes, onFailed }: Props) {
         link.target = '_blank'
         link.rel = 'noopener noreferrer'
         link.className = 'underline underline-offset-4'
-        link.textContent = 'Xem trên USGS (mở tab mới)'
+        link.textContent = `${tRef.current('quake.view')} ${tRef.current('common.newTab')}`
         root.append(title, where, when, link)
         new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
           .setLngLat(feature.geometry.coordinates as [number, number])
@@ -167,7 +171,7 @@ export default function MapCanvas({ radarTiles, quakes, onFailed }: Props) {
   }, [quakes, ready])
 
   return (
-    <div className="absolute inset-0" role="region" aria-label="Bản đồ Việt Nam">
+    <div className="absolute inset-0" role="region" aria-label={t('map.region')}>
       <div ref={containerRef} className="h-full w-full" />
     </div>
   )

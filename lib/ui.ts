@@ -7,8 +7,9 @@ export const outlineButton = `inline-flex min-h-11 items-center justify-center r
 
 export const textButton = `inline-flex min-h-11 items-center rounded-cell px-2 font-medium text-ink underline decoration-1 underline-offset-4 hover:decoration-2 motion-safe:active:translate-y-px disabled:text-ink-muted disabled:no-underline ${focusless}`
 
+/** Borderless filled field. Focus is shown by the global accent outline. */
 export const fieldClass =
-  'min-h-11 w-full rounded-popup border border-ink-muted bg-surface px-3 text-ink placeholder:text-ink-muted disabled:border-line disabled:bg-ground disabled:text-ink-muted'
+  'min-h-12 w-full rounded-popup border-0 bg-line/60 px-3 text-ink transition-colors placeholder:text-ink-muted hover:bg-line focus:bg-line disabled:bg-surface disabled:text-ink-muted'
 
 export const linkClass = 'underline decoration-1 underline-offset-4 hover:decoration-2'
 

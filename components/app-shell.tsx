@@ -1,32 +1,35 @@
 'use client'
 
-import { ChatCircleText, House, MapTrifold, Wind, type Icon } from '@phosphor-icons/react'
+import { GithubLogo, Info, MapPin, ShareNetwork } from '@phosphor-icons/react'
 import { LiquidGlass } from '@vepando/liquid-glass-react'
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { dateTimeFromMs } from '@/lib/format'
 import { readLastSync } from '@/lib/data'
+import { useT } from '@/lib/i18n'
 import { usePlaces } from '@/lib/places'
-import { pageX, textButton } from '@/lib/ui'
+import { GITHUB_URL } from '@/lib/site'
+import { pageX } from '@/lib/ui'
 import { useMediaQuery, useOnline } from '@/lib/use-browser'
+import { AboutSheet } from './about-sheet'
 import { AskView } from './ask-view'
 import { HomeView } from './home-view'
+import { LanguageMenu } from './language-switcher'
 import { Logo } from './logo'
 import { MapView } from './map-view'
 import { PlaceSheet, type SheetMode } from './place-sheet'
+import { SiteFooter } from './site-footer'
+import { TABS, type TabId } from './tabs'
 import { TodayView } from './today-view'
 
-type TabId = 'today' | 'home' | 'map' | 'ask'
-
-const TABS: { id: TabId; label: string; Icon: Icon }[] = [
-  { id: 'today', label: 'Hôm nay', Icon: Wind },
-  { id: 'home', label: 'Quê nhà', Icon: House },
-  { id: 'map', label: 'Bản đồ', Icon: MapTrifold },
-  { id: 'ask', label: 'Hỏi thăm', Icon: ChatCircleText },
-]
+const railTool =
+  'grid size-12 place-items-center rounded-popup text-ink-muted transition-colors hover:bg-line/70 hover:text-accent'
 
 export function AppShell() {
+  const { t } = useT()
   const [tab, setTab] = useState<TabId>('today')
   const [sheet, setSheet] = useState<SheetMode>(null)
+  const [aboutOpen, setAboutOpen] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
   const { current, ready } = usePlaces()
   const online = useOnline()
   const isRail = useMediaQuery('(min-width: 1024px)')
@@ -41,6 +44,26 @@ export function AppShell() {
   useEffect(() => {
     if (!online) setLastSync(readLastSync())
   }, [online])
+
+  useEffect(() => {
+    if (!toast) return
+    const timer = window.setTimeout(() => setToast(null), 2500)
+    return () => window.clearTimeout(timer)
+  }, [toast])
+
+  const share = useCallback(async () => {
+    const data = { title: t('share.title'), text: t('share.text'), url: window.location.href }
+    try {
+      if (navigator.share) {
+        await navigator.share(data)
+        return
+      }
+      await navigator.clipboard.writeText(data.url)
+      setToast(t('share.copied'))
+    } catch {
+      // The user dismissed the share sheet, or the clipboard is blocked.
+    }
+  }, [t])
 
   function onTabKeyDown(event: KeyboardEvent, index: number) {
     const next = isRail
@@ -58,36 +81,43 @@ export function AppShell() {
   }
 
   return (
-    <div className="min-h-dvh pb-28 lg:pb-8 lg:pl-28">
+    <div className="min-h-dvh pb-28 lg:pb-0 lg:pl-28">
       <header className="sticky top-3 z-30 mx-auto max-w-[1200px] px-3 lg:px-8">
         <LiquidGlass radius={28} tint="dark" className="text-ink">
-          <div className="flex min-h-16 items-center justify-between gap-4 px-4">
+          <div className="flex min-h-16 items-center justify-between gap-2 px-4">
             <div className="flex min-w-0 items-center gap-3">
               <Logo size={44} />
               <div className="min-w-0">
                 <h1 className="truncate font-display text-xl leading-tight tracking-tight">
-                  {ready && current ? current.name : 'Thở Sạch'}
+                  {ready && current ? current.name : t('app.name')}
                 </h1>
-                {ready && current?.detail ? (
-                  <p className="truncate text-sm text-ink-muted">{current.detail}</p>
-                ) : null}
+                <p className="truncate text-sm text-ink-muted">
+                  {ready && current?.detail ? current.detail : t('app.tagline')}
+                </p>
               </div>
             </div>
-            {ready && current ? (
-              <button type="button" onClick={() => setSheet('current')} className={textButton}>
-                Đổi nơi
-              </button>
-            ) : null}
+            <div className="flex shrink-0 items-center gap-1">
+              {ready && current ? (
+                <button
+                  type="button"
+                  onClick={() => setSheet('current')}
+                  aria-label={t('nav.changePlace')}
+                  className="flex min-h-11 items-center gap-1.5 rounded-popup px-3 text-sm font-medium text-ink transition-colors hover:bg-line/70"
+                >
+                  <MapPin size={20} weight="duotone" aria-hidden="true" className="text-accent" />
+                  <span className="hidden sm:inline">{t('nav.changePlace')}</span>
+                </button>
+              ) : null}
+              <LanguageMenu />
+            </div>
           </div>
         </LiquidGlass>
       </header>
 
       {!online ? (
         <p role="status" className={`${pageX} border-b border-line bg-surface py-3`}>
-          Bạn đang ngoại tuyến.{' '}
-          {lastSync
-            ? `Đang hiển thị số liệu lưu lần cuối lúc ${dateTimeFromMs(lastSync)}.`
-            : 'Chưa có số liệu đã lưu để hiển thị.'}
+          {t('offline.banner')}{' '}
+          {lastSync ? t('offline.last', { time: dateTimeFromMs(lastSync) }) : t('offline.none')}
         </p>
       ) : null}
 
@@ -113,8 +143,10 @@ export function AppShell() {
         </main>
       </div>
 
+      <SiteFooter onNavigate={setTab} onAbout={() => setAboutOpen(true)} onShare={share} />
+
       <LiquidGlass
-        render={<nav aria-label="Các mục chính" />}
+        render={<nav aria-label={t('nav.label')} />}
         radius={32}
         tint="dark"
         className="!fixed inset-x-3 bottom-3 z-30 lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-3 lg:w-20 lg:-translate-y-1/2"
@@ -122,9 +154,9 @@ export function AppShell() {
         <div
           role="tablist"
           aria-orientation={isRail ? 'vertical' : 'horizontal'}
-          className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-2 lg:py-2"
+          className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-1 lg:pt-2"
         >
-          {TABS.map(({ id, label, Icon }, index) => {
+          {TABS.map(({ id, labelKey, Icon }, index) => {
             const selected = tab === id
             return (
               <button
@@ -140,19 +172,58 @@ export function AppShell() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setTab(id)}
                 onKeyDown={(e) => onTabKeyDown(e, index)}
-                className={`flex min-h-16 flex-col items-center justify-center gap-1 text-sm lg:min-h-20 ${
-                  selected ? 'font-medium text-accent' : 'text-ink-muted'
+                className={`flex min-h-16 flex-col items-center justify-center gap-1 text-sm transition-colors lg:min-h-[4.5rem] ${
+                  selected ? 'font-medium text-accent' : 'text-ink-muted hover:text-ink'
                 }`}
               >
-                <Icon size={24} weight={selected ? 'fill' : 'regular'} aria-hidden="true" />
-                {label}
+                <Icon size={24} weight={selected ? 'fill' : 'duotone'} aria-hidden="true" />
+                {t(labelKey)}
               </button>
             )
           })}
         </div>
+
+        <div
+          role="group"
+          aria-label={t('nav.tools')}
+          className="hidden flex-col items-center gap-1 border-t border-line/70 py-2 lg:flex"
+        >
+          <button type="button" onClick={share} aria-label={t('nav.share')} title={t('nav.share')} className={railTool}>
+            <ShareNetwork size={22} weight="duotone" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setAboutOpen(true)}
+            aria-label={t('nav.about')}
+            title={t('nav.about')}
+            className={railTool}
+          >
+            <Info size={22} weight="duotone" aria-hidden="true" />
+          </button>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${t('nav.github')} ${t('common.newTab')}`}
+            title={t('nav.github')}
+            className={railTool}
+          >
+            <GithubLogo size={22} weight="fill" aria-hidden="true" />
+          </a>
+        </div>
       </LiquidGlass>
 
+      {toast ? (
+        <p
+          role="status"
+          className="fixed bottom-28 left-1/2 z-50 -translate-x-1/2 rounded-popup bg-ink px-4 py-3 text-sm text-surface shadow-float lg:bottom-6"
+        >
+          {toast}
+        </p>
+      ) : null}
+
       <PlaceSheet mode={sheet} onClose={() => setSheet(null)} />
+      <AboutSheet open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
   )
 }
