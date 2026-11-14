@@ -1,25 +1,32 @@
 'use client'
 
+import { CaretDown, CaretUp, CloudRain, Pulse } from '@phosphor-icons/react'
 import dynamic from 'next/dynamic'
 import { useId, useMemo, useState } from 'react'
 import { SOURCES } from '@/lib/data'
 import { dateTimeFromMs, formatNumber, hhmmFromMs } from '@/lib/format'
+import { useT } from '@/lib/i18n'
 import { useQuakes, useRadar } from '@/lib/queries'
 import { linkClass, pageX, textButton } from '@/lib/ui'
-import { Credits } from './credits'
 import { HourStrip, type StripCell } from './hour-strip'
 import { LoadingNote, SectionError, SectionTitle, SkeletonBlock } from './states'
 
+function MapLoading() {
+  const { t } = useT()
+  return (
+    <div className="absolute inset-0 grid place-items-center bg-line">
+      <LoadingNote>{t('map.loading')}</LoadingNote>
+    </div>
+  )
+}
+
 const MapCanvas = dynamic(() => import('./map-canvas'), {
   ssr: false,
-  loading: () => (
-    <div className="absolute inset-0 grid place-items-center bg-line">
-      <LoadingNote>Đang tải bản đồ…</LoadingNote>
-    </div>
-  ),
+  loading: () => <MapLoading />,
 })
 
 export function MapView() {
+  const { t } = useT()
   const [radarOn, setRadarOn] = useState(true)
   const [quakesOn, setQuakesOn] = useState(true)
   const [frameChoice, setFrameChoice] = useState<number | null>(null)
@@ -39,9 +46,7 @@ export function MapView() {
 
   return (
     <>
-      <p className={`${pageX} border-b border-line py-3`}>
-        Dữ liệu mang tính tham khảo. Khi có cảnh báo, hãy theo thông báo của chính quyền địa phương.
-      </p>
+      <p className={`${pageX} border-b border-line py-3`}>{t('map.disclaimer')}</p>
 
       <div className="relative h-[calc(100dvh-16rem)] min-h-[420px] overflow-hidden border-b border-line bg-line lg:h-[calc(100dvh-8rem)]">
         {mapFailed ? (
@@ -76,8 +81,6 @@ export function MapView() {
       </div>
 
       <QuakeList on={quakesOn} quakes={quakes} />
-
-      <Credits basemap radar={radarOn} quakes={quakesOn} />
     </>
   )
 }
@@ -94,12 +97,13 @@ type LayerSheetProps = {
 }
 
 function LayerSheet({ radarOn, onRadar, quakesOn, onQuakes, radar, quakes, frameIndex, onFrame }: LayerSheetProps) {
+  const { t } = useT()
   const [open, setOpen] = useState(true)
   const bodyId = useId()
 
   return (
     <section
-      aria-label="Lớp bản đồ"
+      aria-label={t('map.layers')}
       className="absolute inset-x-0 bottom-0 z-10 mx-auto flex max-h-[70%] w-full flex-col rounded-t-sheet bg-surface shadow-float sm:inset-x-auto sm:bottom-4 sm:left-4 sm:max-h-[calc(100%-2rem)] sm:w-[360px] sm:rounded-sheet"
     >
       <button
@@ -109,16 +113,23 @@ function LayerSheet({ radarOn, onRadar, quakesOn, onQuakes, radar, quakes, frame
         aria-controls={bodyId}
         className="flex min-h-12 w-full items-center justify-between gap-4 px-4 text-left"
       >
-        <span className="font-display text-lg tracking-tight">Lớp bản đồ</span>
-        <span className="text-sm font-medium underline underline-offset-4">{open ? 'Thu gọn' : 'Mở'}</span>
+        <span className="font-display text-lg tracking-tight">{t('map.layers')}</span>
+        <span className="flex items-center gap-1 text-sm font-medium">
+          {open ? t('map.collapse') : t('map.expand')}
+          {open ? (
+            <CaretDown size={16} weight="bold" aria-hidden="true" />
+          ) : (
+            <CaretUp size={16} weight="bold" aria-hidden="true" />
+          )}
+        </span>
       </button>
 
       <div id={bodyId} hidden={!open} className="overflow-y-auto px-4 pb-4">
         <div className="flex flex-col gap-3">
-          <LayerSwitch label="Ra-đa mưa" checked={radarOn} onChange={onRadar} />
+          <LayerSwitch label={t('map.radar')} icon={<CloudRain size={20} weight="duotone" />} checked={radarOn} onChange={onRadar} />
           {radarOn ? <RadarControls radar={radar} frameIndex={frameIndex} onFrame={onFrame} /> : null}
 
-          <LayerSwitch label="Động đất 30 ngày" checked={quakesOn} onChange={onQuakes} />
+          <LayerSwitch label={t('map.quakes')} icon={<Pulse size={20} weight="duotone" />} checked={quakesOn} onChange={onQuakes} />
           {quakesOn ? <QuakeStatus quakes={quakes} /> : null}
         </div>
       </div>
@@ -128,16 +139,23 @@ function LayerSheet({ radarOn, onRadar, quakesOn, onQuakes, radar, quakes, frame
 
 function LayerSwitch({
   label,
+  icon,
   checked,
   onChange,
 }: {
   label: string
+  icon: React.ReactNode
   checked: boolean
   onChange: (on: boolean) => void
 }) {
   return (
     <label className="flex min-h-11 cursor-pointer items-center justify-between gap-4 border-t border-line pt-1 first:border-t-0 first:pt-0">
-      <span className="font-medium">{label}</span>
+      <span className="flex items-center gap-2 font-medium">
+        <span aria-hidden="true" className="text-accent">
+          {icon}
+        </span>
+        {label}
+      </span>
       <input
         type="checkbox"
         role="switch"
@@ -158,13 +176,14 @@ function RadarControls({
   frameIndex: number
   onFrame: (index: number) => void
 }) {
+  const { t } = useT()
   const { data, error, mutate } = radar
 
   if (error) return <SectionError source={SOURCES.rainViewer} onRetry={() => mutate()} />
   if (!data) {
     return (
       <div className="flex flex-col gap-2">
-        <LoadingNote>Đang lấy ảnh ra-đa…</LoadingNote>
+        <LoadingNote>{t('map.radarLoading')}</LoadingNote>
         <SkeletonBlock className="h-7 w-full" />
       </div>
     )
@@ -175,7 +194,7 @@ function RadarControls({
     return {
       key: String(frame.time),
       bg: frame.nowcast ? 'var(--color-line)' : 'var(--color-river-normal)',
-      label: `${time}${frame.nowcast ? ', dự báo' : ''}`,
+      label: `${time}${frame.nowcast ? `, ${t('map.forecast')}` : ''}`,
       tick: i % 3 === 0 ? time : undefined,
       tickShort: i % 6 === 0 ? time : undefined,
     }
@@ -184,14 +203,12 @@ function RadarControls({
 
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-sm text-ink-muted">
-        Kéo dải để xem ra-đa theo thời gian. Ô xám nhạt là dự báo ngắn hạn.
-      </p>
-      <HourStrip cells={cells} activeIndex={frameIndex} name="Khung hình ra-đa" onSelect={onFrame} />
+      <p className="text-sm text-ink-muted">{t('map.radarHelp')}</p>
+      <HourStrip cells={cells} activeIndex={frameIndex} name={t('map.radarFrame')} onSelect={onFrame} />
       {frame ? (
         <p className="text-sm">
-          Ra-đa lúc <span className="font-mono">{hhmmFromMs(frame.time)}</span>
-          {frame.nowcast ? ', dự báo' : ''}
+          <span className="font-mono">{t('map.radarAt', { time: hhmmFromMs(frame.time) })}</span>
+          {frame.nowcast ? `, ${t('map.forecast')}` : ''}
         </p>
       ) : null}
     </div>
@@ -199,37 +216,37 @@ function RadarControls({
 }
 
 function QuakeStatus({ quakes }: { quakes: ReturnType<typeof useQuakes> }) {
+  const { t } = useT()
   if (quakes.error) return <SectionError source={SOURCES.usgs} onRetry={() => quakes.mutate()} />
-  if (!quakes.data) return <LoadingNote>Đang lấy dữ liệu động đất…</LoadingNote>
-  return (
-    <p className="text-sm">
-      <span className="font-mono">{quakes.data.length}</span> trận từ M 3 trở lên trong vùng quanh Việt Nam. Chạm vào
-      chấm để xem chi tiết.
-    </p>
-  )
+  if (!quakes.data) return <LoadingNote>{t('map.quakeLoading')}</LoadingNote>
+  return <p className="text-sm">{t('map.quakeCount', { count: quakes.data.length })}</p>
 }
 
 function QuakeList({ on, quakes }: { on: boolean; quakes: ReturnType<typeof useQuakes> }) {
+  const { t } = useT()
   return (
     <section aria-labelledby="quake-heading" className={`${pageX} flex flex-col gap-3 py-6`}>
-      <SectionTitle id="quake-heading">Động đất 30 ngày qua</SectionTitle>
+      <SectionTitle id="quake-heading" icon={<Pulse size={20} weight="duotone" />}>
+        {t('quake.title')}
+      </SectionTitle>
       {!on ? (
-        <p className="text-ink-muted">Bật lớp “Động đất 30 ngày” để xem danh sách.</p>
+        <p className="text-ink-muted">{t('quake.enable')}</p>
       ) : quakes.error ? (
         <SectionError source={SOURCES.usgs} onRetry={() => quakes.mutate()} />
       ) : !quakes.data ? (
-        <LoadingNote>Đang lấy dữ liệu động đất…</LoadingNote>
+        <LoadingNote>{t('map.quakeLoading')}</LoadingNote>
       ) : quakes.data.length === 0 ? (
-        <p>Không có trận động đất M 3 trở lên nào được ghi nhận trong vùng này suốt 30 ngày qua.</p>
+        <p>{t('quake.none')}</p>
       ) : (
         <ul className="divide-y divide-line border-y border-line">
           {quakes.data.map((q) => (
             <li key={q.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3">
               <span className="w-16 font-mono text-lg font-medium">M {formatNumber(q.mag, 1)}</span>
               <span className="font-mono text-ink-muted">{dateTimeFromMs(q.time)}</span>
-              <span className="min-w-0 flex-1 basis-60">{q.place}</span>
+              <span className="min-w-0 flex-1 basis-60">{q.place || t('quake.unknown')}</span>
               <a href={q.url} target="_blank" rel="noopener noreferrer" className={`${textButton} ${linkClass}`}>
-                Xem trên USGS<span className="sr-only"> (mở tab mới)</span>
+                {t('quake.view')}
+                <span className="sr-only"> {t('common.newTab')}</span>
               </a>
             </li>
           ))}

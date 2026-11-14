@@ -1,15 +1,16 @@
 @import 'tailwindcss';
 @import 'maplibre-gl/dist/maplibre-gl.css';
+@import '@vepando/liquid-glass-react/style.css';
 
 @theme {
   --color-*: initial;
 
-  --color-ground: #f2f4f1;
-  --color-surface: #ffffff;
-  --color-line: #d9ded8;
-  --color-ink: #161b1f;
-  --color-ink-muted: #5b646b;
-  --color-accent: #2f56c7;
+  --color-ground: #0a0f16;
+  --color-surface: #131b26;
+  --color-line: #2a3646;
+  --color-ink: #e8eef5;
+  --color-ink-muted: #9aa8b8;
+  --color-accent: #7fb0ff;
 
   /* Vietnam VN_AQI levels. Data only, never decoration. */
   --color-aqi-tot: #00e400;
@@ -27,21 +28,26 @@
   --radius-popup: 8px;
   --radius-sheet: 16px;
 
-  --shadow-float: 0 6px 24px rgb(22 27 31 / 0.16);
+  --shadow-float: 0 8px 28px rgb(0 0 0 / 0.5);
+  --shadow-press-accent: 0 3px 0 #3f6fc0, 0 6px 12px rgb(0 0 0 / 0.45);
+  --shadow-press-ink: 0 3px 0 #3a4859, 0 6px 12px rgb(0 0 0 / 0.4);
+  --shadow-card-3d: 0 2px 0 #2a3646, 0 10px 20px rgb(0 0 0 / 0.35);
+  --drop-shadow-logo: 0 4px 8px rgb(0 0 0 / 0.55);
 
   --ease-sheet: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @theme inline {
-  --font-display: var(--font-bricolage), 'Be Vietnam Pro', sans-serif;
-  --font-sans: var(--font-be-vietnam), sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-display: var(--font-google-sans-flex), var(--font-noto-sans-jp), sans-serif;
+  --font-sans: var(--font-google-sans-flex), var(--font-noto-sans-jp), sans-serif;
+  --font-mono: var(--font-google-sans-flex), var(--font-noto-sans-jp), sans-serif;
 }
 
 @layer base {
   html {
     background-color: var(--color-ground);
     color: var(--color-ink);
+    color-scheme: dark;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -51,6 +57,23 @@
     font-size: 1rem;
     line-height: 1.6;
     font-weight: 400;
+    background-image: radial-gradient(
+      ellipse 80% 50% at 50% -10%,
+      rgb(127 176 255 / 0.16),
+      transparent
+    );
+    background-attachment: fixed;
+  }
+
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-variation-settings: 'opsz' 36;
+    font-weight: 650;
   }
 
   :focus-visible {
@@ -101,13 +124,39 @@
 }
 
 dialog.sheet::backdrop {
-  background-color: rgb(22 27 31 / 0.4);
+  background-color: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(6px);
 }
 
 /* MapLibre controls and popup, re-toked to the app. */
 .maplibregl-ctrl-group {
   border-radius: var(--radius-popup) !important;
   box-shadow: var(--shadow-float) !important;
+  background: var(--color-surface) !important;
+}
+
+.maplibregl-ctrl-group button + button {
+  border-top-color: var(--color-line) !important;
+}
+
+.maplibregl-ctrl button .maplibregl-ctrl-icon {
+  filter: invert(1);
+}
+
+.maplibregl-popup-content {
+  background: var(--color-surface) !important;
+}
+
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+  border-top-color: var(--color-surface) !important;
+}
+
+.maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+  border-bottom-color: var(--color-surface) !important;
 }
 
 .maplibregl-ctrl-group button {

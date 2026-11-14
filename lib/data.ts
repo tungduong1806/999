@@ -346,7 +346,7 @@ export async function fetchQuakes(): Promise<Quake[]> {
       .map((f) => ({
         id: f.id,
         mag: f.properties.mag as number,
-        place: f.properties.place ?? 'Không rõ vị trí',
+        place: f.properties.place ?? '',
         time: f.properties.time,
         url: f.properties.url,
         lon: f.geometry.coordinates[0],

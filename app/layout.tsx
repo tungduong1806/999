@@ -1,44 +1,43 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Be_Vietnam_Pro, Bricolage_Grotesque, JetBrains_Mono } from 'next/font/google'
+import { Google_Sans_Flex, Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 
-const bricolage = Bricolage_Grotesque({
-  subsets: ['latin', 'vietnamese'],
-  weight: ['600'],
-  variable: '--font-bricolage',
+const googleSansFlex = Google_Sans_Flex({
+  subsets: ['latin', 'latin-ext', 'vietnamese'],
+  axes: ['opsz'],
+  variable: '--font-google-sans-flex',
   display: 'swap',
 })
 
-const beVietnam = Be_Vietnam_Pro({
+const notoSansJp = Noto_Sans_JP({
   subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500'],
-  variable: '--font-be-vietnam',
-  display: 'swap',
-})
-
-const jetbrains = JetBrains_Mono({
-  subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500'],
-  variable: '--font-jetbrains',
+  variable: '--font-noto-sans-jp',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'Thở Sạch: không khí hôm nay, nước sông ở quê',
+  title: 'Thở Sạch: chất lượng không khí và cảnh báo lũ',
   description:
     'Xem nhanh hôm nay có cần đeo khẩu trang không và quê nhà có nguy cơ mưa lũ không. Số liệu mô hình từ Open-Meteo.',
   icons: {
-    icon: '/icon.svg',
-    apple: '/apple-icon.png',
+    icon: '/logo.png',
+    apple: '/logo.png',
   },
+  appleWebApp: {
+    capable: true,
+    title: 'Thở Sạch',
+    statusBarStyle: 'black-translucent',
+  },
+  formatDetection: { telephone: false },
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light',
-  themeColor: '#F2F4F1',
+  colorScheme: 'dark',
+  themeColor: '#0A0F16',
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -49,9 +48,9 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${bricolage.variable} ${beVietnam.variable} ${jetbrains.variable} bg-ground`}
+      className={`${googleSansFlex.variable} ${notoSansJp.variable} bg-ground`}
     >
-      <body className="bg-ground text-ink antialiased">
+      <body className="overflow-x-hidden bg-ground text-ink antialiased [-webkit-text-size-adjust:100%] [-webkit-tap-highlight-color:transparent]">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
