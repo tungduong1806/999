@@ -54,7 +54,7 @@ export function SiteFooter({ onNavigate, onAbout, onShare }: Props) {
   const { t } = useT()
 
   return (
-    <footer className="mt-12 border-t border-line bg-surface/60 text-sm">
+    <footer className="mt-12 border-t border-line/60 text-sm lg:-ml-32 lg:pl-32">
       <div className={`${pageX} mx-auto grid max-w-[1200px] gap-10 py-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]`}>
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">

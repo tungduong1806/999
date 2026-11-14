@@ -79,9 +79,11 @@ function AirSkeleton() {
   const { t } = useT()
   return (
     <div>
-      <div className="flex min-h-56 flex-col justify-between bg-line px-4 py-6 lg:px-8">
-        <LoadingNote>{t('air.loading')}</LoadingNote>
-        <SkeletonBlock className="h-16 w-40 bg-surface" />
+      <div className={`${pageX} pt-2`}>
+        <div className="flex min-h-56 flex-col justify-between rounded-sheet bg-surface p-5 lg:p-8">
+          <LoadingNote>{t('air.loading')}</LoadingNote>
+          <SkeletonBlock className="h-16 w-40 bg-line" />
+        </div>
       </div>
       <div className={`${pageX} py-6`}>
         <SkeletonBlock className="h-7 w-full" />
@@ -143,24 +145,34 @@ function AirContent({ air }: { air: Air }) {
 
   return (
     <div>
-      <section
-        aria-labelledby="aqi-heading"
-        className="flex min-h-56 flex-col justify-between gap-6 px-4 py-6 lg:px-8"
-        style={{ backgroundColor: level.bg, color: level.fg }}
-      >
-        <h2 id="aqi-heading" className="text-lg font-medium">
-          {t('air.title')}
-        </h2>
-        <div>
-          <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <span className="font-mono text-[clamp(4.5rem,22vw,8rem)] leading-none font-medium">
-              {Math.round(air.aqi)}
+      <div className={`${pageX} pt-2`}>
+        <section
+          aria-labelledby="aqi-heading"
+          className="flex min-h-56 flex-col justify-between gap-6 rounded-sheet p-5 text-ink shadow-card-3d lg:p-8"
+          style={{
+            backgroundColor: 'var(--color-surface)',
+            backgroundImage: `linear-gradient(135deg, color-mix(in oklab, ${level.bg} 38%, var(--color-surface)) 0%, var(--color-surface) 78%)`,
+          }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 id="aqi-heading" className="text-lg font-medium">
+              {t('air.title')}
+            </h2>
+            <span
+              className="inline-flex min-h-8 items-center rounded-full px-3 text-sm font-medium"
+              style={{ backgroundColor: level.bg, color: level.fg }}
+            >
+              {t(level.labelKey)}
             </span>
-            <span className="font-display text-3xl leading-tight tracking-tight">{t(level.labelKey)}</span>
-          </p>
-          <p className="mt-2">{t('air.aqiAt', { time: hhmmFromIso(air.time) })}</p>
-        </div>
-      </section>
+          </div>
+          <div>
+            <p className="font-mono text-[clamp(4.5rem,22vw,8rem)] leading-none font-medium">
+              {Math.round(air.aqi)}
+            </p>
+            <p className="mt-3 text-ink-muted">{t('air.aqiAt', { time: hhmmFromIso(air.time) })}</p>
+          </div>
+        </section>
+      </div>
 
       <div className={`${pageX} flex flex-col gap-4 py-6`}>
         <p className="text-ink-muted">{t('air.estimate')}</p>
