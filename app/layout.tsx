@@ -1,26 +1,18 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Be_Vietnam_Pro, Bricolage_Grotesque, JetBrains_Mono } from 'next/font/google'
+import { Google_Sans_Flex, Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 
-const bricolage = Bricolage_Grotesque({
-  subsets: ['latin', 'vietnamese'],
-  weight: ['600'],
-  variable: '--font-bricolage',
+const googleSansFlex = Google_Sans_Flex({
+  subsets: ['latin', 'latin-ext', 'vietnamese'],
+  axes: ['opsz'],
+  variable: '--font-google-sans-flex',
   display: 'swap',
 })
 
-const beVietnam = Be_Vietnam_Pro({
+const notoSansJp = Noto_Sans_JP({
   subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500'],
-  variable: '--font-be-vietnam',
-  display: 'swap',
-})
-
-const jetbrains = JetBrains_Mono({
-  subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500'],
-  variable: '--font-jetbrains',
+  variable: '--font-noto-sans-jp',
   display: 'swap',
 })
 
@@ -35,8 +27,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light',
-  themeColor: '#F2F4F1',
+  colorScheme: 'dark',
+  themeColor: '#0A0F16',
   width: 'device-width',
   initialScale: 1,
 }
@@ -49,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${bricolage.variable} ${beVietnam.variable} ${jetbrains.variable} bg-ground`}
+      className={`${googleSansFlex.variable} ${notoSansJp.variable} bg-ground`}
     >
       <body className="bg-ground text-ink antialiased">
         {children}

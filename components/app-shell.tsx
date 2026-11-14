@@ -1,6 +1,7 @@
 'use client'
 
 import { ChatCircleText, House, MapTrifold, Wind, type Icon } from '@phosphor-icons/react'
+import { LiquidGlass } from '@vepando/liquid-glass-react'
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { dateTimeFromMs } from '@/lib/format'
 import { readLastSync } from '@/lib/data'
@@ -57,26 +58,28 @@ export function AppShell() {
   }
 
   return (
-    <div className="min-h-dvh pb-20 lg:pb-0 lg:pl-24">
-      <header className="sticky top-0 z-30 border-b border-line bg-ground">
-        <div className={`${pageX} mx-auto flex min-h-16 max-w-[1200px] items-center justify-between gap-4`}>
-          <div className="flex min-w-0 items-center gap-3">
-            <Logo size={44} />
-            <div className="min-w-0">
-              <h1 className="truncate font-display text-xl leading-tight tracking-tight">
-                {ready && current ? current.name : 'Thở Sạch'}
-              </h1>
-              {ready && current?.detail ? (
-                <p className="truncate text-sm text-ink-muted">{current.detail}</p>
-              ) : null}
+    <div className="min-h-dvh pb-28 lg:pb-8 lg:pl-28">
+      <header className="sticky top-3 z-30 mx-auto max-w-[1200px] px-3 lg:px-8">
+        <LiquidGlass radius={28} tint="dark" className="text-ink">
+          <div className="flex min-h-16 items-center justify-between gap-4 px-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <Logo size={44} />
+              <div className="min-w-0">
+                <h1 className="truncate font-display text-xl leading-tight tracking-tight">
+                  {ready && current ? current.name : 'Thở Sạch'}
+                </h1>
+                {ready && current?.detail ? (
+                  <p className="truncate text-sm text-ink-muted">{current.detail}</p>
+                ) : null}
+              </div>
             </div>
+            {ready && current ? (
+              <button type="button" onClick={() => setSheet('current')} className={textButton}>
+                Đổi nơi
+              </button>
+            ) : null}
           </div>
-          {ready && current ? (
-            <button type="button" onClick={() => setSheet('current')} className={textButton}>
-              Đổi nơi
-            </button>
-          ) : null}
-        </div>
+        </LiquidGlass>
       </header>
 
       {!online ? (
@@ -88,7 +91,7 @@ export function AppShell() {
         </p>
       ) : null}
 
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-[1200px] pt-4">
         <main
           key={tab}
           id={`panel-${tab}`}
@@ -110,14 +113,16 @@ export function AppShell() {
         </main>
       </div>
 
-      <nav
-        aria-label="Các mục chính"
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface lg:inset-y-0 lg:right-auto lg:w-24 lg:border-t-0 lg:border-r lg:bg-ground"
+      <LiquidGlass
+        render={<nav aria-label="Các mục chính" />}
+        radius={32}
+        tint="dark"
+        className="!fixed inset-x-3 bottom-3 z-30 lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-3 lg:w-20 lg:-translate-y-1/2"
       >
         <div
           role="tablist"
           aria-orientation={isRail ? 'vertical' : 'horizontal'}
-          className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-2 lg:pt-20"
+          className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-2 lg:py-2"
         >
           {TABS.map(({ id, label, Icon }, index) => {
             const selected = tab === id
@@ -145,7 +150,7 @@ export function AppShell() {
             )
           })}
         </div>
-      </nav>
+      </LiquidGlass>
 
       <PlaceSheet mode={sheet} onClose={() => setSheet(null)} />
     </div>
