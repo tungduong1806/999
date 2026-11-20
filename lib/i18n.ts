@@ -172,7 +172,7 @@ const vi = {
 
   'ask.title': 'Hỏi thăm',
   'ask.p1': 'Xem dự báo theo giờ và hỏi AI để lên kế hoạch cho ngày của bạn.',
-  'ask.p2': 'Câu hỏi, tên địa điểm và dữ liệu dự báo được gửi tới dịch vụ AI DeepSeek. Đừng nhập thông tin cá nhân.',
+  'ask.p2': 'Để DeepSeek trả lời, ứng dụng gửi câu hỏi, tên địa điểm và dữ liệu dự báo qua DeepSeek, FPT Cloud hoặc Vercel AI Gateway, tùy cấu hình. Đừng nhập thông tin cá nhân.',
 
    'info.heading': 'Dữ liệu môi trường dễ hiểu cho học sinh, sinh viên và người xa quê',
   'info.lead':
@@ -376,7 +376,7 @@ const en: Dict = {
 
   'ask.title': 'Check in',
   'ask.p1': 'See the hourly forecast and ask AI to help plan your day.',
-  'ask.p2': 'Your question, place name, and forecast data are sent to the DeepSeek AI service. Do not include personal information.',
+  'ask.p2': 'To get an answer from DeepSeek, this app sends your question, place name, and forecast data via DeepSeek, FPT Cloud, or Vercel AI Gateway, depending on configuration. Do not include personal information.',
 
    'info.heading': 'Clear environmental insight for students, workers and families far from home',
   'info.lead':
@@ -577,7 +577,7 @@ const ja: Dict = {
 
   'ask.title': '安否確認',
   'ask.p1': '時間別の天気予報を確認し、AI に質問して一日の予定を立てましょう。',
-  'ask.p2': '質問、地点名、予報データは DeepSeek の AI サービスに送信されます。個人情報は入力しないでください。',
+  'ask.p2': 'DeepSeek が回答するために、質問、地点名、予報データは設定に応じて DeepSeek、FPT Cloud、または Vercel AI Gateway に送信されます。個人情報は入力しないでください。',
 
   'info.heading': '学生・社会人・故郷を離れた家族のための、わかりやすい環境情報',
   'info.lead':
