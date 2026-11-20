@@ -44,7 +44,7 @@ const vi = {
     'Thở Sạch giúp bạn biết nhanh hôm nay có cần đeo khẩu trang không và quê nhà có nguy cơ mưa lũ không. Dữ liệu là số ước tính từ mô hình, không phải số đo tại trạm.',
   'about.sources': 'Nguồn dữ liệu',
   'about.privacy': 'Quyền riêng tư',
-  'about.privacyText': 'Nơi bạn chọn chỉ được lưu trên thiết bị của bạn. Ứng dụng không gửi dữ liệu cá nhân đi đâu.',
+  'about.privacyText': 'Danh sách địa điểm được lưu trên thiết bị. Tọa độ làm tròn được gửi đi để lấy dự báo. Khi dùng trợ lý, câu hỏi và tên địa điểm được gửi tới dịch vụ AI; ứng dụng không lưu câu hỏi vào cơ sở dữ liệu.',
   'about.emergency': 'Số khẩn cấp ở Việt Nam',
   'about.police': 'Công an',
   'about.fire': 'Cứu hỏa',
@@ -168,8 +168,8 @@ const vi = {
   'sheet.full': 'Bạn đã lưu đủ {max} nơi. Xóa bớt một nơi ở tab Quê nhà để thêm nơi mới.',
 
   'ask.title': 'Hỏi thăm',
-  'ask.p1': 'Tính năng này sẽ có ở phiên bản 2. Bạn sẽ soạn nhanh tin nhắn hỏi người nhà về tình hình mưa lũ ở quê.',
-  'ask.p2': 'Phiên bản này chỉ hiển thị số liệu mô hình từ Open-Meteo và không gửi dữ liệu của bạn đi đâu.',
+  'ask.p1': 'Xem dự báo theo giờ và hỏi AI để lên kế hoạch cho ngày của bạn.',
+  'ask.p2': 'Câu hỏi và tên địa điểm được gửi tới dịch vụ AI. Đừng nhập thông tin cá nhân.',
 
    'info.heading': 'Dữ liệu môi trường dễ hiểu cho học sinh, sinh viên và người xa quê',
   'info.lead':
@@ -181,7 +181,7 @@ const vi = {
   'info.f3.title': 'Quê nhà trong tầm tay',
   'info.f3.desc': 'Lưu nhiều nơi như quê nội, quê ngoại hay nhà người thân và xem tình hình của tất cả chỉ với một lần chạm.',
   'info.f4.title': 'Riêng tư và ngoại tuyến',
-  'info.f4.desc': 'Nơi bạn chọn chỉ lưu trên thiết bị. Số liệu gần nhất vẫn xem được khi mất mạng, và ứng dụng không thu thập dữ liệu cá nhân.',
+  'info.f4.desc': 'Danh sách địa điểm lưu trên thiết bị. Một số dữ liệu đã tải vẫn xem được khi mất mạng; dự báo chi tiết và AI cần kết nối.',
   'info.how.title': 'Cách hoạt động',
   'info.how.1.title': 'Chọn khu vực',
   'info.how.1.desc': 'Tìm theo tên phường, quận, thành phố hoặc chọn theo tỉnh và phường/xã.',
@@ -245,7 +245,7 @@ const en: Dict = {
     'Thở Sạch tells you at a glance whether you need a mask today and whether your hometown is at risk of floods. Figures are model estimates, not station measurements.',
   'about.sources': 'Data sources',
   'about.privacy': 'Privacy',
-  'about.privacyText': 'The places you pick are stored only on your device. The app does not send personal data anywhere.',
+  'about.privacyText': 'Your saved places are kept on your device. Rounded coordinates are sent to get the detailed forecast. When you use the assistant, your question and the place name are sent to the AI service; the app does not store questions in its database.',
   'about.emergency': 'Emergency numbers in Vietnam',
   'about.police': 'Police',
   'about.fire': 'Fire',
@@ -369,8 +369,8 @@ const en: Dict = {
   'sheet.full': 'You have saved all {max} places. Remove one in the Hometown tab to add another.',
 
   'ask.title': 'Check in',
-  'ask.p1': 'This feature arrives in version 2. You will be able to quickly write a message asking family about floods back home.',
-  'ask.p2': 'This version only shows model data from Open-Meteo and does not send your data anywhere.',
+  'ask.p1': 'See the hourly forecast and ask AI to help plan your day.',
+  'ask.p2': 'Your question and place name are sent to the AI service. Do not include personal information.',
 
    'info.heading': 'Clear environmental insight for students, workers and families far from home',
   'info.lead':
@@ -382,7 +382,7 @@ const en: Dict = {
   'info.f3.title': 'Hometown at a glance',
   'info.f3.desc': 'Save several places such as grandparents or relatives and check every one of them with a single tap.',
   'info.f4.title': 'Private and offline-ready',
-  'info.f4.desc': 'Your places stay on your device. The latest data remains available without a connection, and no personal data is collected.',
+  'info.f4.desc': 'Your saved places stay on your device. Some previously loaded data is available offline; the detailed forecast and AI need a connection.',
   'info.how.title': 'How it works',
   'info.how.1.title': 'Pick an area',
   'info.how.1.desc': 'Search by ward, district or city, or browse by province and ward/commune.',
@@ -443,7 +443,7 @@ const ja: Dict = {
     'Thở Sạch は、今日マスクが必要か、故郷に洪水の恐れがあるかをすぐに確認できるアプリです。数値は観測所の実測ではなく、モデルによる推定値です。',
   'about.sources': 'データ提供元',
   'about.privacy': 'プライバシー',
-  'about.privacyText': '選択した場所はお使いの端末にのみ保存されます。個人データは外部に送信されません。',
+  'about.privacyText': '保存した地点の一覧は端末に保持されます。詳細な予報を取得するため、丸めた座標を送信します。AI に質問すると、質問と地点名が AI サービスに送信されます。アプリのデータベースに質問は保存しません。',
   'about.emergency': 'ベトナムの緊急連絡先',
   'about.police': '警察',
   'about.fire': '消防',
@@ -567,10 +567,10 @@ const ja: Dict = {
   'sheet.full': '{max} か所すべて保存済みです。追加するには「故郷」タブで1つ削除してください。',
 
   'ask.title': '安否確認',
-  'ask.p1': 'この機能はバージョン 2 で提供予定です。故郷の洪水の状況を家族にすばやく尋ねるメッセージを作成できます。',
-  'ask.p2': 'このバージョンでは Open-Meteo のモデルデータを表示するだけで、あなたのデータはどこにも送信されません。',
+  'ask.p1': '時間別の天気予報を確認し、AI に質問して一日の予定を立てましょう。',
+  'ask.p2': '質問と地点名は AI サービスに送信されます。個人情報は入力しないでください。',
 
-   'info.heading': '学生・社会人・故郷を離れた家族のための、わかりやすい環境情報',
+  'info.heading': '学生・社会人・故郷を離れた家族のための、わかりやすい環境情報',
   'info.lead':
     'Thở Sạch は、地区ごとの大気質・降水量・河川水位のモデルデータをまとめて表示します。マスクが必要か、外出に適した時間帯はいつか、故郷で大雨や洪水の恐れはないか。毎日の判断に必要な答えをひと目で確認できます。',
   'info.f1.title': '1時間ごとの大気質',
@@ -580,7 +580,7 @@ const ja: Dict = {
   'info.f3.title': '故郷をすぐ確認',
   'info.f3.desc': '祖父母や親戚の住む地域を複数保存し、ワンタップでまとめて確認できます。',
   'info.f4.title': 'プライバシーとオフライン',
-  'info.f4.desc': '保存した場所は端末内にのみ保持。通信がなくても直近のデータを表示し、個人情報は収集しません。',
+  'info.f4.desc': '保存した地点の一覧は端末に保持されます。一部の取得済みデータはオフラインで閲覧できますが、詳細な予報と AI には通信が必要です。',
   'info.how.title': '使い方',
   'info.how.1.title': '地域を選ぶ',
   'info.how.1.desc': '区・市の名前で検索するか、省と区・村から選択します。',

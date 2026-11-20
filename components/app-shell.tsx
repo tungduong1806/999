@@ -139,7 +139,7 @@ export function AppShell() {
           ) : tab === 'map' ? (
             <MapView />
           ) : (
-            <AskView />
+            ready ? <AskView place={current} onPick={() => setSheet('current')} /> : null
           )}
         </main>
       </div>
