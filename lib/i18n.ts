@@ -125,6 +125,9 @@ const vi = {
   'river.extreme': 'Cao bất thường',
 
   'map.disclaimer': 'Dữ liệu mang tính tham khảo. Khi có cảnh báo, hãy theo thông báo của chính quyền địa phương.',
+ 'map.openGoogle': 'Mở Google Maps',
+ 'map.googleEmbed': 'Google Maps trong trang',
+ 'map.googleNote': 'Đang xem Google Maps. Tắt chế độ này để quay lại bản đồ radar mưa và động đất.',
   'map.loading': 'Đang tải bản đồ…',
   'map.region': 'Bản đồ Việt Nam',
   'map.layers': 'Lớp bản đồ',
@@ -169,7 +172,7 @@ const vi = {
 
   'ask.title': 'Hỏi thăm',
   'ask.p1': 'Xem dự báo theo giờ và hỏi AI để lên kế hoạch cho ngày của bạn.',
-  'ask.p2': 'Câu hỏi và tên địa điểm được gửi tới dịch vụ AI. Đừng nhập thông tin cá nhân.',
+  'ask.p2': 'Câu hỏi, tên địa điểm và dữ liệu dự báo được gửi tới dịch vụ AI DeepSeek. Đừng nhập thông tin cá nhân.',
 
    'info.heading': 'Dữ liệu môi trường dễ hiểu cho học sinh, sinh viên và người xa quê',
   'info.lead':
@@ -326,6 +329,9 @@ const en: Dict = {
   'river.extreme': 'Unusually high',
 
   'map.disclaimer': 'Data is for reference only. When an alert is issued, follow your local authorities.',
+ 'map.openGoogle': 'Open Google Maps',
+ 'map.googleEmbed': 'Embedded Google Maps',
+ 'map.googleNote': 'Viewing Google Maps. Turn it off to return to the rain radar and earthquake layers.',
   'map.loading': 'Loading the map…',
   'map.region': 'Map of Vietnam',
   'map.layers': 'Map layers',
@@ -370,7 +376,7 @@ const en: Dict = {
 
   'ask.title': 'Check in',
   'ask.p1': 'See the hourly forecast and ask AI to help plan your day.',
-  'ask.p2': 'Your question and place name are sent to the AI service. Do not include personal information.',
+  'ask.p2': 'Your question, place name, and forecast data are sent to the DeepSeek AI service. Do not include personal information.',
 
    'info.heading': 'Clear environmental insight for students, workers and families far from home',
   'info.lead':
@@ -524,6 +530,9 @@ const ja: Dict = {
   'river.extreme': '異常に多い',
 
   'map.disclaimer': 'データは参考情報です。警報が出た場合は、地元自治体の指示に従ってください。',
+ 'map.openGoogle': 'Google マップを開く',
+ 'map.googleEmbed': '埋め込み Google マップ',
+ 'map.googleNote': 'Google マップを表示しています。この表示をオフにすると、雨雲レーダーと地震のレイヤーに戻ります。',
   'map.loading': '地図を読み込んでいます…',
   'map.region': 'ベトナムの地図',
   'map.layers': '地図レイヤー',
@@ -568,7 +577,7 @@ const ja: Dict = {
 
   'ask.title': '安否確認',
   'ask.p1': '時間別の天気予報を確認し、AI に質問して一日の予定を立てましょう。',
-  'ask.p2': '質問と地点名は AI サービスに送信されます。個人情報は入力しないでください。',
+  'ask.p2': '質問、地点名、予報データは DeepSeek の AI サービスに送信されます。個人情報は入力しないでください。',
 
   'info.heading': '学生・社会人・故郷を離れた家族のための、わかりやすい環境情報',
   'info.lead':

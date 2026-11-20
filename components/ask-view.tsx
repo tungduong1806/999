@@ -5,6 +5,7 @@ import { useT } from '@/lib/i18n'
 import type { Place } from '@/lib/places'
 import { outlineButton, pageX } from '@/lib/ui'
 import { weatherCopy } from '@/lib/weather-copy'
+import { GoogleMapsLink } from './google-maps'
 import { WeatherDetails } from './weather-details'
 import { WeatherQuestion } from './weather-question'
 
@@ -24,7 +25,10 @@ export function AskView({ place, onPick }: { place: Place | null; onPick: () => 
           <h2 id="ask-heading" className="font-display text-3xl tracking-tight sm:text-4xl">{t('ask.title')}</h2>
           <p className="max-w-prose text-sm text-ink-muted sm:text-base">{t('ask.p1')}</p>
         </div>
-        <button type="button" onClick={onPick} className={`${outlineButton} text-sm`}>{t('nav.changePlace')}</button>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <button type="button" onClick={onPick} className={`${outlineButton} text-sm`}>{t('nav.changePlace')}</button>
+          <GoogleMapsLink location={location} />
+        </div>
       </header>
       <div className="grid items-start gap-4 md:grid-cols-2">
         <WeatherDetails lat={location.lat} lon={location.lon} />

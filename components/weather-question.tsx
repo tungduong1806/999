@@ -76,7 +76,7 @@ export function WeatherQuestion({ lat, lon, placeName }: { lat: number; lon: num
         {!busy && result && 'error' in result ? <p className="text-sm text-ink">{errors[result.error]}</p> : null}
         {!busy && result && 'mode' in result ? (
           <div className="flex flex-col gap-2 rounded-popup border border-line bg-line/35 p-4">
-            <h3 className="font-medium text-accent">{result.mode === 'ai' ? copy.answer : copy.summaryTitle}</h3>
+            <h3 className="font-medium text-accent">{result.mode === 'ai' ? `${copy.answer} · DeepSeek Flash` : copy.summaryTitle}</h3>
             {result.mode === 'ai' ? (
               <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">{result.answer}</p>
             ) : (

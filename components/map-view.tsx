@@ -6,8 +6,10 @@ import { useId, useMemo, useState } from 'react'
 import { SOURCES } from '@/lib/data'
 import { dateTimeFromMs, formatNumber, hhmmFromMs } from '@/lib/format'
 import { useT } from '@/lib/i18n'
+import type { Place } from '@/lib/places'
 import { useQuakes, useRadar } from '@/lib/queries'
-import { linkClass, pageX, textButton } from '@/lib/ui'
+import { linkClass, outlineButton, pageX, textButton } from '@/lib/ui'
+import { GoogleMapsEmbed, GoogleMapsLink, hasGoogleMapsEmbed } from './google-maps'
 import { HourStrip, type StripCell } from './hour-strip'
 import { LoadingNote, SectionError, SectionTitle, SkeletonBlock } from './states'
 
@@ -25,8 +27,9 @@ const MapCanvas = dynamic(() => import('./map-canvas'), {
   loading: () => <MapLoading />,
 })
 
-export function MapView() {
+export function MapView({ place }: { place: Place | null }) {
   const { t } = useT()
+  const [showGoogle, setShowGoogle] = useState(false)
   const [radarOn, setRadarOn] = useState(true)
   const [quakesOn, setQuakesOn] = useState(true)
   const [frameChoice, setFrameChoice] = useState<number | null>(null)
@@ -46,10 +49,20 @@ export function MapView() {
 
   return (
     <>
-      <p className={`${pageX} border-b border-line py-3`}>{t('map.disclaimer')}</p>
+      <div className={`${pageX} flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line py-3`}>
+        <p className="max-w-prose flex-1 basis-72">{t(showGoogle ? 'map.googleNote' : 'map.disclaimer')}</p>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          {hasGoogleMapsEmbed ? (
+            <button type="button" aria-pressed={showGoogle} onClick={() => setShowGoogle((value) => !value)} className={`${outlineButton} text-sm`}>
+              {t('map.googleEmbed')}
+            </button>
+          ) : null}
+          <GoogleMapsLink location={place} />
+        </div>
+      </div>
 
       <div className="relative h-[calc(100dvh-16rem)] min-h-[420px] overflow-hidden border-b border-line bg-line lg:h-[calc(100dvh-8rem)]">
-        {mapFailed ? (
+        {showGoogle ? <GoogleMapsEmbed location={place} /> : mapFailed ? (
           <div className="absolute inset-0 grid place-items-center p-6">
             <SectionError
               source="OpenFreeMap"
@@ -68,16 +81,18 @@ export function MapView() {
           />
         )}
 
-        <LayerSheet
-          radarOn={radarOn}
-          onRadar={setRadarOn}
-          quakesOn={quakesOn}
-          onQuakes={setQuakesOn}
-          radar={radar}
-          quakes={quakes}
-          frameIndex={frameIndex}
-          onFrame={setFrameChoice}
-        />
+        {!showGoogle ? (
+          <LayerSheet
+            radarOn={radarOn}
+            onRadar={setRadarOn}
+            quakesOn={quakesOn}
+            onQuakes={setQuakesOn}
+            radar={radar}
+            quakes={quakes}
+            frameIndex={frameIndex}
+            onFrame={setFrameChoice}
+          />
+        ) : null}
       </div>
 
       <QuakeList on={quakesOn} quakes={quakes} />
