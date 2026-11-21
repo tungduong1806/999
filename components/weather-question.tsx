@@ -3,27 +3,33 @@
 import { ArrowUpRight, Sparkle } from '@phosphor-icons/react'
 import { useActionState, useId, useRef, useState } from 'react'
 import { localeOf, useT } from '@/lib/i18n'
-import { fieldClass, primaryButton } from '@/lib/ui'
-import { forecastGrid, QUESTION_LIMIT, WEATHER_SOURCE, WEATHER_ZONE, type WeatherAnswer } from '@/lib/weather-contract'
+import { fieldClass, outlineButton, primaryButton } from '@/lib/ui'
+import { forecastGrid, QUESTION_LIMIT, WEATHER_API_KEY_LIMIT, WEATHER_SOURCE, WEATHER_ZONE, type WeatherAnswer, type WeatherProvider } from '@/lib/weather-contract'
 import { weatherCopy } from '@/lib/weather-copy'
 import { SectionTitle } from './states'
 
-type AskState = WeatherAnswer | { error: 'forecast' | 'quota' | 'invalid' | 'assistant' } | null
+type AskState = WeatherAnswer | { error: 'forecast' | 'quota' | 'invalid' | 'assistant' | 'keyFormat' | 'keyRejected' | 'providerLimit' | 'providerUnavailable' } | null
 
 export function WeatherQuestion({ lat, lon, placeName }: { lat: number; lon: number; placeName: string }) {
   const { t, lang } = useT()
   const copy = weatherCopy[lang]
   const [question, setQuestion] = useState('')
+  const [provider, setProvider] = useState<WeatherProvider>('fpt')
+  const [apiKey, setApiKey] = useState('')
   const input = useRef<HTMLTextAreaElement>(null)
   const id = useId()
   const [result, dispatch, busy] = useActionState(async (_previous: AskState, formData: FormData): Promise<AskState> => {
     const question = String(formData.get('question') ?? '').trim()
     if (question.length < 3 || question.length > QUESTION_LIMIT) return { error: 'invalid' }
+    const key = apiKey.trim()
     try {
       const response = await fetch('/api/weather/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...forecastGrid(lat, lon), placeName: placeName.slice(0, 120), question, lang }),
+        body: JSON.stringify({
+          ...forecastGrid(lat, lon), placeName: placeName.slice(0, 120), question, lang,
+          credential: key ? { provider, apiKey: key } : undefined,
+        }),
         signal: AbortSignal.timeout(38_000),
       })
       const data = await response.json()
@@ -31,12 +37,21 @@ export function WeatherQuestion({ lat, lon, placeName }: { lat: number; lon: num
       if (data.error === 'quota_reached') return { error: 'quota' }
       if (data.error === 'forecast_unavailable') return { error: 'forecast' }
       if (data.error === 'invalid_question') return { error: 'invalid' }
+      if (data.error === 'invalid_credential') return { error: 'keyFormat' }
+      if (data.error === 'provider_key_rejected') return { error: 'keyRejected' }
+      if (data.error === 'provider_limit') return { error: 'providerLimit' }
+      if (data.error === 'provider_unavailable') return { error: 'providerUnavailable' }
       return { error: 'assistant' }
     } catch {
       return { error: 'assistant' }
     }
   }, null)
-  const errors = { forecast: copy.noForecast, quota: copy.quota, invalid: copy.invalid, assistant: copy.noAnswer }
+  const errors = {
+    forecast: copy.noForecast, quota: copy.quota, invalid: copy.invalid, assistant: copy.noAnswer,
+    keyFormat: copy.keyFormat, keyRejected: copy.keyRejected,
+    providerLimit: copy.providerLimit, providerUnavailable: copy.providerUnavailable,
+  }
+  const keyError = !busy && result && 'error' in result && ['keyFormat', 'keyRejected'].includes(result.error)
   const locale = localeOf(lang)
   const date = new Intl.DateTimeFormat(locale, { timeZone: WEATHER_ZONE, dateStyle: 'short', timeStyle: 'short' })
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 })
@@ -45,10 +60,44 @@ export function WeatherQuestion({ lat, lon, placeName }: { lat: number; lon: num
     <section aria-labelledby="weather-assistant" className="flex min-w-0 flex-col gap-4 rounded-sheet border border-line bg-surface p-4 sm:p-6">
       <SectionTitle id="weather-assistant" icon={<Sparkle size={20} weight="duotone" />}>{copy.assistant}</SectionTitle>
       <p className="text-sm text-ink-muted">{copy.scope}</p>
-      <button type="button" disabled={busy} onClick={() => { setQuestion(copy.example); input.current?.focus() }} className="min-h-11 self-start rounded-popup border border-line px-3 text-left text-sm text-accent transition-colors hover:bg-line/60 disabled:opacity-50">
-        {copy.example}
-      </button>
       <form action={dispatch} className="flex flex-col gap-3" aria-busy={busy}>
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <label htmlFor={`${id}-provider`} className="text-sm font-medium">{copy.provider}</label>
+            <select
+              id={`${id}-provider`}
+              value={provider}
+              disabled={busy}
+              onChange={(event) => { setProvider(event.target.value === 'deepseek' ? 'deepseek' : 'fpt'); setApiKey('') }}
+              className={fieldClass}
+            >
+              <option value="fpt">FPT Cloud</option>
+              <option value="deepseek">DeepSeek</option>
+            </select>
+          </div>
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <label htmlFor={`${id}-key`} className="text-sm font-medium">{copy.apiKey}</label>
+            <input
+              id={`${id}-key`}
+              type="password"
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
+              maxLength={WEATHER_API_KEY_LIMIT}
+              readOnly={busy}
+              value={apiKey}
+              onChange={(event) => setApiKey(event.target.value)}
+              aria-describedby={keyError ? `${id}-key-hint ${id}-result` : `${id}-key-hint`}
+              aria-invalid={keyError || undefined}
+              className={fieldClass}
+              placeholder={copy.apiKeyPlaceholder}
+            />
+          </div>
+        </div>
+        <p id={`${id}-key-hint`} className="text-xs leading-relaxed text-ink-muted">{copy.keyHint}</p>
+        <button type="button" disabled={busy} onClick={() => { setQuestion(copy.example); input.current?.focus() }} className={`${outlineButton} self-start whitespace-normal text-left text-sm`}>
+          {copy.example}
+        </button>
         <label htmlFor={id} className="text-sm font-medium">{copy.question}</label>
         <textarea
           ref={input}
@@ -71,7 +120,7 @@ export function WeatherQuestion({ lat, lon, placeName }: { lat: number; lon: num
         </button>
       </form>
       <p id={`${id}-privacy`} className="text-xs leading-relaxed text-ink-muted">{t('ask.p2')}</p>
-      <div aria-live="polite" aria-atomic="true">
+      <div id={`${id}-result`} aria-live="polite" aria-atomic="true">
         {busy ? <p className="text-sm text-ink-muted">{copy.thinking}</p> : null}
         {!busy && result && 'error' in result ? <p className="text-sm text-ink">{errors[result.error]}</p> : null}
         {!busy && result && 'mode' in result ? (

@@ -2,6 +2,9 @@ export const WEATHER_SOURCE = 'MET Norway'
 export const WEATHER_SOURCE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/documentation'
 export const WEATHER_ZONE = 'Asia/Ho_Chi_Minh'
 export const QUESTION_LIMIT = 350
+export const WEATHER_API_KEY_LIMIT = 512
+export const WEATHER_PROVIDERS = ['fpt', 'deepseek'] as const
+export type WeatherProvider = (typeof WEATHER_PROVIDERS)[number]
 
 export type ForecastHour = {
   time: string

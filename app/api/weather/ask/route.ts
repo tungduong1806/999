@@ -1,7 +1,7 @@
 import { createDeepSeek } from '@ai-sdk/deepseek'
 import { APICallError, generateText, type LanguageModel } from 'ai'
 import { z } from 'zod'
-import { QUESTION_LIMIT, WEATHER_SOURCE, WEATHER_ZONE, type Forecast, type WeatherAnswer } from '@/lib/weather-contract'
+import { QUESTION_LIMIT, WEATHER_API_KEY_LIMIT, WEATHER_PROVIDERS, WEATHER_SOURCE, WEATHER_ZONE, type Forecast, type WeatherAnswer, type WeatherProvider } from '@/lib/weather-contract'
 import { coordinatesSchema, getForecast, takeWeatherAiSlot } from '@/lib/weather-server'
 
 export const maxDuration = 40
@@ -10,6 +10,10 @@ const inputSchema = coordinatesSchema.extend({
   placeName: z.string().trim().min(1).max(120),
   question: z.string().trim().min(3).max(QUESTION_LIMIT),
   lang: z.enum(['vi', 'en', 'ja']),
+  credential: z.object({
+    provider: z.enum(WEATHER_PROVIDERS),
+    apiKey: z.string().trim().min(1).max(WEATHER_API_KEY_LIMIT).regex(/^[\x21-\x7E]+$/),
+  }).optional(),
 })
 const languages = { vi: 'Vietnamese', en: 'English', ja: 'Japanese' }
 const localTime = new Intl.DateTimeFormat('en-GB', {
@@ -20,30 +24,43 @@ const localTime = new Intl.DateTimeFormat('en-GB', {
 
 const gatewayModel = 'deepseek/deepseek-v4.1-flash-1017'
 const fptCompletionEnvelope = z.object({
-  code: z.literal(200),
-  data: z.looseObject({ choices: z.array(z.unknown()) }),
+  code: z.number(),
+  data: z.looseObject({ choices: z.array(z.unknown()) }).optional(),
 })
 
+const fetchDirectCompletion: typeof fetch = (input, init) => fetch(input, { ...init, redirect: 'error', cache: 'no-store' })
+
 const fetchFptCompletion: typeof fetch = async (input, init) => {
-  const response = await fetch(input, { ...init, redirect: 'error' })
+  const response = await fetchDirectCompletion(input, init)
   if (!response.ok) return response
 
   const envelope = fptCompletionEnvelope.safeParse(await response.clone().json().catch(() => null))
-  return envelope.success ? Response.json(envelope.data.data) : response
+  if (!envelope.success) return response
+  const { code, data } = envelope.data
+  if (code === 200 && data) return Response.json(data)
+  if ([401, 402, 403, 429].includes(code)) return Response.json({}, { status: code })
+  return response
 }
 
-function getDirectWeatherModel() {
+function directWeatherModel(provider: WeatherProvider, apiKey: string) {
+  return provider === 'fpt'
+    ? createDeepSeek({ apiKey, baseURL: 'https://mkp-api.fptcloud.com', fetch: fetchFptCompletion })('DeepSeek-V4.1-Flash')
+    : createDeepSeek({ apiKey, fetch: fetchDirectCompletion })('deepseek-flash')
+}
+
+function defaultDirectWeatherModel() {
   const fptKey = process.env.FPT_CLOUD_API_KEY?.trim()
-  if (fptKey) {
-    return createDeepSeek({
-      apiKey: fptKey,
-      baseURL: 'https://mkp-api.fptcloud.com',
-      fetch: fetchFptCompletion,
-    })('DeepSeek-V4.1-Flash')
-  }
+  if (fptKey) return directWeatherModel('fpt', fptKey)
 
   const deepSeekKey = process.env.DEEPSEEK_API_KEY?.trim()
-  return deepSeekKey ? createDeepSeek({ apiKey: deepSeekKey })('deepseek-flash') : null
+  return deepSeekKey ? directWeatherModel('deepseek', deepSeekKey) : null
+}
+
+function providerFailure(error?: unknown) {
+  const status = APICallError.isInstance(error) ? error.statusCode : undefined
+  if (status === 401 || status === 403) return Response.json({ error: 'provider_key_rejected' }, { status: 422 })
+  if (status === 402 || status === 429) return Response.json({ error: 'provider_limit' }, { status: 429 })
+  return Response.json({ error: 'provider_unavailable' }, { status: 502 })
 }
 
 function canUseGateway(error: unknown) {
@@ -85,9 +102,12 @@ export async function POST(request: Request) {
   }
 
   const parsed = inputSchema.safeParse(await request.json().catch(() => null))
-  if (!parsed.success) return Response.json({ error: 'invalid_question' }, { status: 400 })
+  if (!parsed.success) {
+    const invalidCredential = parsed.error.issues.some(({ path }) => path[0] === 'credential')
+    return Response.json({ error: invalidCredential ? 'invalid_credential' : 'invalid_question' }, { status: 400 })
+  }
 
-  const { lat, lon, placeName, question, lang } = parsed.data
+  const { lat, lon, placeName, question, lang, credential } = parsed.data
   const forecast = await getForecast(lat, lon).catch(() => null)
   if (!forecast) return Response.json({ error: 'forecast_unavailable' }, { status: 503 })
 
@@ -95,7 +115,9 @@ export async function POST(request: Request) {
     const allowed = await takeWeatherAiSlot(AbortSignal.any([request.signal, AbortSignal.timeout(3_000)]))
     if (!allowed) return Response.json({ error: 'quota_reached' }, { status: 429 })
 
-    const directModel = getDirectWeatherModel()
+    const directModel = credential
+      ? directWeatherModel(credential.provider, credential.apiKey)
+      : defaultDirectWeatherModel()
     const sharedSignal = AbortSignal.any([request.signal, AbortSignal.timeout(18_000)])
     const generate = (model: LanguageModel, signal: AbortSignal) => generateText({
       model,
@@ -118,14 +140,15 @@ export async function POST(request: Request) {
     const directSignal = directModel ? AbortSignal.timeout(8_000) : null
     const direct = directModel && directSignal
       ? await generate(directModel, AbortSignal.any([sharedSignal, directSignal])).catch((error: unknown) => {
-          if (!sharedSignal.aborted && (directSignal.aborted || canUseGateway(error))) return null
+          if (!credential && !sharedSignal.aborted && (directSignal.aborted || canUseGateway(error))) return null
           throw error
         })
       : null
-    const text = direct?.text.trim() || (await generate(gatewayModel, sharedSignal)).text.trim()
-    if (!text) return fallbackAnswer(forecast)
+    const text = direct?.text.trim() || (credential ? '' : (await generate(gatewayModel, sharedSignal)).text.trim())
+    if (!text) return credential ? providerFailure() : fallbackAnswer(forecast)
     return Response.json({ mode: 'ai', answer: text, modelUpdatedAt: forecast.modelUpdatedAt, stale: forecast.stale } satisfies WeatherAnswer)
   } catch (error) {
+    if (credential) return providerFailure(error)
     console.warn('Weather assistant request failed', error instanceof Error ? error.name : 'Unknown error')
     return fallbackAnswer(forecast)
   }

@@ -49,21 +49,11 @@ export function MapView({ place }: { place: Place | null }) {
 
   return (
     <>
-      <div className={`${pageX} flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line py-3`}>
-        <p className="max-w-prose flex-1 basis-72">{t(showGoogle ? 'map.googleNote' : 'map.disclaimer')}</p>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          {hasGoogleMapsEmbed ? (
-            <button type="button" aria-pressed={showGoogle} onClick={() => setShowGoogle((value) => !value)} className={`${outlineButton} text-sm`}>
-              {t('map.googleEmbed')}
-            </button>
-          ) : null}
-          <GoogleMapsLink location={place} />
-        </div>
-      </div>
+      <p className={`${pageX} border-b border-line py-3`}>{t('map.disclaimer')}</p>
 
       <div className="relative h-[calc(100dvh-16rem)] min-h-[420px] overflow-hidden border-b border-line bg-line lg:h-[calc(100dvh-8rem)]">
-        {showGoogle ? <GoogleMapsEmbed location={place} /> : mapFailed ? (
-          <div className="absolute inset-0 grid place-items-center p-6">
+        {mapFailed ? (
+          <div className="absolute inset-0 flex items-start justify-center p-6">
             <SectionError
               source="OpenFreeMap"
               onRetry={() => {
@@ -81,21 +71,41 @@ export function MapView({ place }: { place: Place | null }) {
           />
         )}
 
-        {!showGoogle ? (
-          <LayerSheet
-            radarOn={radarOn}
-            onRadar={setRadarOn}
-            quakesOn={quakesOn}
-            onQuakes={setQuakesOn}
-            radar={radar}
-            quakes={quakes}
-            frameIndex={frameIndex}
-            onFrame={setFrameChoice}
-          />
-        ) : null}
+        <LayerSheet
+          radarOn={radarOn}
+          onRadar={setRadarOn}
+          quakesOn={quakesOn}
+          onQuakes={setQuakesOn}
+          radar={radar}
+          quakes={quakes}
+          frameIndex={frameIndex}
+          onFrame={setFrameChoice}
+        />
       </div>
 
       <QuakeList on={quakesOn} quakes={quakes} />
+      <div className={`${pageX} flex flex-col gap-3 pb-6`}>
+        <div className="flex flex-wrap items-center gap-2">
+          <GoogleMapsLink location={place} />
+          {hasGoogleMapsEmbed ? (
+            <button type="button" aria-expanded={showGoogle} aria-controls="google-map-preview" onClick={() => setShowGoogle((value) => !value)} className={`${outlineButton} text-sm`}>
+              {t('map.googleEmbed')}
+            </button>
+          ) : null}
+        </div>
+        {hasGoogleMapsEmbed ? (
+          <div id="google-map-preview" hidden={!showGoogle}>
+            {showGoogle ? (
+              <>
+                <p className="mb-3 text-sm text-ink-muted">{t('map.googleNote')}</p>
+                <div className="relative aspect-video min-h-64 overflow-hidden rounded-sheet bg-line">
+                  <GoogleMapsEmbed location={place} />
+                </div>
+              </>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
     </>
   )
 }
