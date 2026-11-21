@@ -2,7 +2,7 @@ export const weatherCopy = {
   vi: {
     forecast: 'Dự báo chi tiết', assistant: 'Trợ lý thời tiết AI', modelNote: 'Số liệu từ mô hình dự báo, không phải quan trắc hay cảnh báo chính thức.',
     defaultLocation: 'Vị trí mặc định · Hà Nội', loading: 'Đang tải dự báo…', stale: 'Dự báo đã lưu, chưa cập nhật được.',
-    feelsLike: 'Cảm giác như', humidity: 'Độ ẩm', wind: 'Tốc độ gió', uv: 'Chỉ số UV (trời quang)',
+    feelsLike: 'Cảm giác như', humidity: 'Độ ẩm', wind: 'Tốc độ gió', uv: 'Chỉ số UV (trời quang)', peak: 'cao nhất',
     hourly: 'Xem dự báo theo giờ', time: 'Giờ', rain: 'Lượng mưa', rainNote: 'Lượng mưa dự báo trong một giờ kể từ mốc hiển thị. Dấu — nghĩa là chưa có dữ liệu.', updated: 'Mô hình cập nhật',
     scope: 'Hỏi về mưa, nhiệt độ hoặc gió tại nơi đang xem trong 24 giờ tới.', question: 'Câu hỏi thời tiết',
     example: 'Có nên mang ô trong 6 giờ tới không?', placeholder: 'Ví dụ: Khi nào trời mát hơn?', thinking: 'AI đang xem dự báo…', send: 'Hỏi AI', answer: 'Trả lời của AI',
@@ -15,7 +15,7 @@ export const weatherCopy = {
   en: {
     forecast: 'Detailed forecast', assistant: 'AI weather assistant', modelNote: 'Model estimates, not observations or official alerts.',
     defaultLocation: 'Default location · Hanoi', loading: 'Loading forecast…', stale: 'Showing a saved forecast; an update is unavailable.',
-    feelsLike: 'Feels like', humidity: 'Humidity', wind: 'Wind speed', uv: 'UV index (clear sky)',
+    feelsLike: 'Feels like', humidity: 'Humidity', wind: 'Wind speed', uv: 'UV index (clear sky)', peak: 'peak',
     hourly: 'View hourly forecast', time: 'Time', rain: 'Rainfall', rainNote: 'Expected rainfall over the hour after the time shown. A dash means no data.', updated: 'Model updated',
     scope: 'Ask about rain, temperature, or wind at the selected location in the next 24 hours.', question: 'Weather question',
     example: 'Should I bring an umbrella in the next six hours?', placeholder: 'For example: When will it cool down?', thinking: 'AI is checking the forecast…', send: 'Ask AI', answer: 'AI answer',
@@ -28,7 +28,7 @@ export const weatherCopy = {
   ja: {
     forecast: '詳しい天気予報', assistant: 'AI 天気アシスタント', modelNote: '予報モデルの推定値です。観測値や公式の警報ではありません。',
     defaultLocation: '既定の地点 · ハノイ', loading: '予報を読み込み中…', stale: '更新できないため、保存済みの予報を表示しています。',
-    feelsLike: '体感温度', humidity: '湿度', wind: '風速', uv: '紫外線指数（快晴時）',
+    feelsLike: '体感温度', humidity: '湿度', wind: '風速', uv: '紫外線指数（快晴時）', peak: '最大',
     hourly: '時間別の予報を見る', time: '時刻', rain: '降水量', rainNote: '表示時刻から1時間の予想降水量です。ダッシュはデータなしを示します。', updated: 'モデル更新',
     scope: '選択した地点の今後24時間の雨、気温、風について質問できます。', question: '天気についての質問',
     example: '今後6時間は傘を持って行った方がいいですか？', placeholder: '例：いつ涼しくなりますか？', thinking: 'AI が予報を確認中…', send: 'AI に聞く', answer: 'AI の回答',

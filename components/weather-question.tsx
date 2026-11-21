@@ -86,6 +86,7 @@ export function WeatherQuestion({ lat, lon, placeName }: { lat: number; lon: num
                 <p className="text-sm">
                   {copy.temperature}: {number.format(result.summary.min)}–{number.format(result.summary.max)} °C ·{' '}
                   {copy.rain}: {result.summary.rainMm == null ? '—' : `${number.format(result.summary.rainMm)} mm`}
+                  {result.summary.maxWindKmh != null ? ` · ${copy.wind}: ${number.format(result.summary.maxWindKmh)} km/h (${copy.peak})` : ''}
                 </p>
               </>
             )}

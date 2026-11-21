@@ -23,7 +23,7 @@ export type Forecast = {
 
 export type WeatherAnswer = { modelUpdatedAt: string; stale: boolean } & (
   | { mode: 'ai'; answer: string }
-  | { mode: 'forecast'; summary: { from: string; to: string; min: number; max: number; rainMm: number | null } }
+  | { mode: 'forecast'; summary: { from: string; to: string; min: number; max: number; rainMm: number | null; maxWindKmh: number | null } }
 )
 
 export function forecastGrid(lat: number, lon: number) {
