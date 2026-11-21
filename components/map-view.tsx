@@ -6,8 +6,10 @@ import { useId, useMemo, useState } from 'react'
 import { SOURCES } from '@/lib/data'
 import { dateTimeFromMs, formatNumber, hhmmFromMs } from '@/lib/format'
 import { useT } from '@/lib/i18n'
+import type { Place } from '@/lib/places'
 import { useQuakes, useRadar } from '@/lib/queries'
-import { linkClass, pageX, textButton } from '@/lib/ui'
+import { linkClass, outlineButton, pageX, textButton } from '@/lib/ui'
+import { GoogleMapsEmbed, GoogleMapsLink, hasGoogleMapsEmbed } from './google-maps'
 import { HourStrip, type StripCell } from './hour-strip'
 import { LoadingNote, SectionError, SectionTitle, SkeletonBlock } from './states'
 
@@ -25,8 +27,9 @@ const MapCanvas = dynamic(() => import('./map-canvas'), {
   loading: () => <MapLoading />,
 })
 
-export function MapView() {
+export function MapView({ place }: { place: Place | null }) {
   const { t } = useT()
+  const [showGoogle, setShowGoogle] = useState(false)
   const [radarOn, setRadarOn] = useState(true)
   const [quakesOn, setQuakesOn] = useState(true)
   const [frameChoice, setFrameChoice] = useState<number | null>(null)
@@ -50,7 +53,7 @@ export function MapView() {
 
       <div className="relative h-[calc(100dvh-16rem)] min-h-[420px] overflow-hidden border-b border-line bg-line lg:h-[calc(100dvh-8rem)]">
         {mapFailed ? (
-          <div className="absolute inset-0 grid place-items-center p-6">
+          <div className="absolute inset-0 flex items-start justify-center p-6">
             <SectionError
               source="OpenFreeMap"
               onRetry={() => {
@@ -81,6 +84,28 @@ export function MapView() {
       </div>
 
       <QuakeList on={quakesOn} quakes={quakes} />
+      <div className={`${pageX} flex flex-col gap-3 pb-6`}>
+        <div className="flex flex-wrap items-center gap-2">
+          <GoogleMapsLink location={place} />
+          {hasGoogleMapsEmbed ? (
+            <button type="button" aria-expanded={showGoogle} aria-controls="google-map-preview" onClick={() => setShowGoogle((value) => !value)} className={`${outlineButton} text-sm`}>
+              {t('map.googleEmbed')}
+            </button>
+          ) : null}
+        </div>
+        {hasGoogleMapsEmbed ? (
+          <div id="google-map-preview" hidden={!showGoogle}>
+            {showGoogle ? (
+              <>
+                <p className="mb-3 text-sm text-ink-muted">{t('map.googleNote')}</p>
+                <div className="relative aspect-video min-h-64 overflow-hidden rounded-sheet bg-line">
+                  <GoogleMapsEmbed location={place} />
+                </div>
+              </>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
     </>
   )
 }

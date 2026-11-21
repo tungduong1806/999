@@ -39,16 +39,22 @@ export default function MapCanvas({ radarTiles, quakes, onFailed }: Props) {
     // Turbopack cannot bundle the MapLibre worker, so serve it from /public.
     maplibregl.setWorkerUrl('/maplibre/maplibre-gl-worker.mjs')
     const narrow = window.matchMedia('(max-width: 767px)').matches
-    const map = new maplibregl.Map({
-      container,
-      style: STYLE_URL,
-      center: [106.2, 16.2],
-      zoom: narrow ? 4.2 : 5,
-      minZoom: 3,
-      maxZoom: 12,
-      attributionControl: { compact: true },
-      cooperativeGestures: false,
-    })
+    let map: MapLibreMap
+    try {
+      map = new maplibregl.Map({
+        container,
+        style: STYLE_URL,
+        center: [106.2, 16.2],
+        zoom: narrow ? 4.2 : 5,
+        minZoom: 3,
+        maxZoom: 12,
+        attributionControl: { compact: true },
+        cooperativeGestures: false,
+      })
+    } catch {
+      onFailedRef.current()
+      return
+    }
     mapRef.current = map
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
 

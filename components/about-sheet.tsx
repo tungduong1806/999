@@ -3,6 +3,7 @@
 import { Ambulance, FireTruck, Info, ShieldCheck, Siren, X } from '@phosphor-icons/react'
 import { useEffect, useRef } from 'react'
 import { useT } from '@/lib/i18n'
+import { WEATHER_SOURCE, WEATHER_SOURCE_URL } from '@/lib/weather-contract'
 
 type Props = {
   open: boolean
@@ -11,6 +12,7 @@ type Props = {
 
 const SOURCES = [
   { name: 'Open-Meteo', href: 'https://open-meteo.com/' },
+  { name: WEATHER_SOURCE, href: WEATHER_SOURCE_URL },
   { name: 'OpenFreeMap', href: 'https://openfreemap.org/' },
   { name: 'OpenStreetMap', href: 'https://www.openstreetmap.org/copyright' },
   { name: 'RainViewer', href: 'https://www.rainviewer.com/' },

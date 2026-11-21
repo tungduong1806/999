@@ -48,6 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
+      suppressHydrationWarning
       className={`${googleSansFlex.variable} ${notoSansJp.variable} bg-ground`}
     >
       <body className="overflow-x-hidden bg-ground text-ink antialiased [-webkit-text-size-adjust:100%] [-webkit-tap-highlight-color:transparent]">

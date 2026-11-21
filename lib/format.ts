@@ -75,3 +75,32 @@ export function weekdayShort(dateKey: string): string {
 export function dayMonth(dateKey: string): string {
   return `${dateKey.slice(8, 10)}/${dateKey.slice(5, 7)}`
 }
+
+const atlasNumber = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
+const atlasInteger = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 })
+
+export function metric(value: number | null, unit = '', integer = false) {
+  return value === null ? '—' : `${(integer ? atlasInteger : atlasNumber).format(value)}${unit}`
+}
+
+export function localTime(value: string | null, zone: string | null) {
+  if (!value || !zone) return null
+  try {
+    return new Intl.DateTimeFormat('vi-VN', { timeZone: zone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(value))
+  } catch { return null }
+}
+
+export function localDateKey(value: string | null, zone: string | null) {
+  if (!value || !zone) return null
+  try { return new Intl.DateTimeFormat('sv-SE', { timeZone: zone, dateStyle: 'short' }).format(new Date(value)) }
+  catch { return null }
+}
+
+export function atlasWeekday(date: string) {
+  return new Intl.DateTimeFormat('vi-VN', { weekday: 'short', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`))
+}
+
+export function coordinateLabel({ lat, lng }: { lat: number; lng: number }) {
+  const degrees = new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 4, maximumFractionDigits: 4, useGrouping: false })
+  return `${degrees.format(Math.abs(lat))}° ${lat >= 0 ? 'B' : 'N'} · ${degrees.format(Math.abs(lng))}° ${lng >= 0 ? 'Đ' : 'T'}`
+}

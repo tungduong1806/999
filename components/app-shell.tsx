@@ -137,9 +137,9 @@ export function AppShell() {
           ) : tab === 'home' ? (
             <HomeView onAdd={() => setSheet('home')} />
           ) : tab === 'map' ? (
-            <MapView />
+            <MapView place={current} />
           ) : (
-            <AskView />
+            ready ? <AskView place={current} onPick={() => setSheet('current')} /> : null
           )}
         </main>
       </div>
